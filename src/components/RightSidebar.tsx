@@ -10,21 +10,25 @@ const RightSidebar = ({ article }) => {
   const SidebarContent = () => (
     <div className="h-full flex flex-col justify-end">
       <div className="space-y-2 bg-black/20 backdrop-blur-sm p-4 rounded-lg">
-        <Button variant="outline" className="w-full justify-start gap-2">
-          <ThumbsUp className="w-4 h-4" /> Like
+        <Button variant="outline" className="w-full justify-start gap-2 md:w-full sm:w-12 sm:h-12 sm:p-0 sm:justify-center">
+          <ThumbsUp className="w-4 h-4" /> 
+          <span className="sm:hidden">Like</span>
         </Button>
-        <Button variant="outline" className="w-full justify-start gap-2">
-          <MessageSquare className="w-4 h-4" /> Comment
+        <Button variant="outline" className="w-full justify-start gap-2 md:w-full sm:w-12 sm:h-12 sm:p-0 sm:justify-center">
+          <MessageSquare className="w-4 h-4" />
+          <span className="sm:hidden">Comment</span>
         </Button>
-        <Button variant="outline" className="w-full justify-start gap-2">
-          <Share2 className="w-4 h-4" /> Share
+        <Button variant="outline" className="w-full justify-start gap-2 md:w-full sm:w-12 sm:h-12 sm:p-0 sm:justify-center">
+          <Share2 className="w-4 h-4" />
+          <span className="sm:hidden">Share</span>
         </Button>
         <Button 
           variant="outline" 
-          className="w-full justify-start gap-2"
+          className="w-full justify-start gap-2 md:w-full sm:w-12 sm:h-12 sm:p-0 sm:justify-center"
           onClick={() => setShowChat(true)}
         >
-          <MessageCircle className="w-4 h-4" /> Chat
+          <MessageCircle className="w-4 h-4" />
+          <span className="sm:hidden">Chat</span>
         </Button>
       </div>
     </div>
@@ -45,7 +49,7 @@ const RightSidebar = ({ article }) => {
   );
 
   return (
-    <div className={`fixed right-0 top-0 bottom-0 w-[350px] ${showChat ? 'bg-wikitok-dark border-l border-border p-4 z-50' : 'bg-transparent'} overflow-hidden`}>
+    <div className={`fixed right-0 top-0 bottom-0 md:w-[350px] sm:w-16 ${showChat ? 'bg-wikitok-dark border-l border-border p-4 z-50 sm:w-full' : 'bg-transparent'} overflow-hidden`}>
       {showChat ? <ChatContent /> : <SidebarContent />}
     </div>
   );
