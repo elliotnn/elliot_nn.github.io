@@ -125,7 +125,9 @@ const ArticleViewer = ({ articles: initialArticles, onArticleChange }) => {
             <p className="text-lg leading-relaxed mb-4">
               {currentIndex === index ? displayedText : article.content}
             </p>
-            <h1 className="text-4xl font-bold mb-6">{article.title}</h1>
+            <div className="sticky -top-8 z-10 pb-4 bg-gradient-to-b from-black/80 via-black/60 to-transparent">
+              <h1 className="text-4xl font-bold">{article.title}</h1>
+            </div>
           </motion.div>
           {currentIndex === index && (
             <div className="absolute bottom-0 left-0 right-0 z-20">
