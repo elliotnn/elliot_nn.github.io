@@ -115,15 +115,13 @@ const ArticleViewer = ({ articles: initialArticles, onArticleChange }) => {
               y: isVisible && currentIndex === index ? 0 : 20,
             }}
             transition={{ duration: 0.5 }}
-            className="relative z-10 text-white p-8 max-w-3xl mx-auto pr-24 h-[calc(100vh-16rem)] flex flex-col justify-end"
+            className="relative z-10 text-white p-8 max-w-3xl mx-auto pr-24"
           >
-            <div className="overflow-y-auto" style={{ maxHeight: '100%' }}>
-              <h1 className="text-4xl font-bold mb-4">{article.title}</h1>
-              <p className="text-lg leading-relaxed mb-12">
-                {currentIndex === index ? displayedText : article.content}
-              </p>
-            </div>
-            <div className="flex items-center space-x-2 text-sm text-gray-300 mt-4">
+            <h1 className="text-4xl font-bold mb-4">{article.title}</h1>
+            <p className="text-lg leading-relaxed mb-12">
+              {currentIndex === index ? displayedText : article.content}
+            </p>
+            <div className="flex items-center space-x-2 text-sm text-gray-300">
               <span>{article.readTime} min read</span>
               <span>•</span>
               <span>{article.views.toLocaleString()} views</span>
