@@ -8,8 +8,8 @@ const RightSidebar = ({ article }) => {
   const [showChat, setShowChat] = useState(false);
 
   const SidebarContent = () => (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-2">
+    <div className="h-full flex flex-col justify-end">
+      <div className="space-y-2">
         <Button variant="outline" className="w-full justify-start gap-2">
           <ThumbsUp className="w-4 h-4" /> Like
         </Button>
