@@ -9,7 +9,7 @@ const RightSidebar = ({ article }) => {
 
   const SidebarContent = () => (
     <div className="h-full flex flex-col justify-end">
-      <div className="flex space-x-2 bg-black/20 backdrop-blur-sm p-4 rounded-lg">
+      <div className="flex flex-col space-y-2 bg-black/20 backdrop-blur-sm p-4 rounded-lg">
         <Button variant="outline" className="w-12 h-12 p-0 justify-center">
           <ThumbsUp className="w-4 h-4" />
         </Button>
