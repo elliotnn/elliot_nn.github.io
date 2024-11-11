@@ -116,14 +116,14 @@ const ArticleAssistant = ({ article }: { article: { title: string; content: stri
         />
       </div>
 
-      <div className="flex-1 overflow-y-auto mb-4">
+      <div className="flex-1 overflow-y-auto mb-4 border-b border-border">
         {messages.map((message, index) => (
           <Message key={index} {...message} />
         ))}
       </div>
 
-      <div className="bg-wikitok-dark border-t border-border p-4">
-        <form onSubmit={handleSubmit} className="flex gap-2">
+      <div className="sticky bottom-0 bg-background shadow-lg border-t border-border mt-auto">
+        <form onSubmit={handleSubmit} className="flex gap-2 p-4">
           <Input
             placeholder="Ask a question..."
             value={question}
