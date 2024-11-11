@@ -11,26 +11,26 @@ const RightSidebar = ({ article }) => {
       <div className="flex flex-col space-y-2">
         <Button 
           variant="ghost" 
-          className="w-12 h-12 p-0 justify-center"
+          className="w-12 h-12 p-0 justify-center hover:text-wikitok-blue"
           onClick={() => setShowChat(true)}
         >
           <MessageCircle className="w-4 h-4" />
         </Button>
         <Button 
           variant="ghost" 
-          className="w-12 h-12 p-0 justify-center"
+          className="w-12 h-12 p-0 justify-center hover:text-wikitok-blue"
         >
           <ThumbsUp className="w-4 h-4" />
         </Button>
         <Button 
           variant="ghost" 
-          className="w-12 h-12 p-0 justify-center"
+          className="w-12 h-12 p-0 justify-center hover:text-wikitok-blue"
         >
           <MessageSquare className="w-4 h-4" />
         </Button>
         <Button 
           variant="ghost" 
-          className="w-12 h-12 p-0 justify-center"
+          className="w-12 h-12 p-0 justify-center hover:text-wikitok-blue"
         >
           <Share2 className="w-4 h-4" />
         </Button>
@@ -39,11 +39,11 @@ const RightSidebar = ({ article }) => {
   );
 
   const ChatContent = () => (
-    <div className="relative h-full">
+    <div className="relative h-full bg-gradient-to-b from-wikitok-blue/5 to-wikitok-dark">
       <Button
         variant="ghost"
         size="icon"
-        className="absolute right-0 top-0"
+        className="absolute right-4 top-4 z-10 hover:text-wikitok-blue"
         onClick={() => setShowChat(false)}
       >
         <X className="h-4 w-4" />
@@ -54,7 +54,7 @@ const RightSidebar = ({ article }) => {
 
   return (
     <div className="fixed right-0 top-0 bottom-0 z-50">
-      <div className={`h-full ${showChat ? 'md:w-[350px] sm:w-full bg-wikitok-dark border-l border-border p-4' : 'sm:w-16 bg-transparent'}`}>
+      <div className={`h-screen ${showChat ? 'w-screen md:w-[450px] bg-wikitok-dark border-l border-wikitok-blue/20' : 'sm:w-16 bg-transparent'}`}>
         {showChat ? <ChatContent /> : <SidebarContent />}
       </div>
     </div>
