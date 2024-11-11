@@ -4,6 +4,7 @@ import { Input } from "./ui/input";
 import { Send, Key } from "lucide-react";
 import { useToast } from "./ui/use-toast";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Popover,
   PopoverContent,
@@ -69,22 +70,45 @@ const useChatAssistant = (article: { title: string; content: string } | null) =>
   return { messages, isLoading, askQuestion };
 };
 
-// Message component
-const Message = ({ role, content }: { role: 'user' | 'assistant', content: string }) => (
-  <div className={cn(
-    "p-4 rounded-lg mb-4",
-    role === 'user' 
-      ? "bg-wikitok-red/10 ml-8" 
-      : "bg-wikitok-blue/10 mr-8"
-  )}>
-    <div className="font-semibold mb-1">
-      {role === 'user' ? 'You' : 'Assistant'}
-    </div>
-    <div className="text-sm text-gray-200">
-      {content}
-    </div>
-  </div>
+// Animated Message component
+const AnimatedWord = ({ word, delay }: { word: string; delay: number }) => (
+  <motion.span
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ delay, duration: 0.2 }}
+    className="inline-block mr-1"
+  >
+    {word}
+  </motion.span>
 );
+
+const Message = ({ role, content }: { role: 'user' | 'assistant', content: string }) => {
+  const words = content.split(' ');
+  
+  return (
+    <div className={cn(
+      "p-4 rounded-lg mb-4",
+      role === 'user' 
+        ? "bg-wikitok-red/10 ml-8" 
+        : "bg-wikitok-blue/10 mr-8"
+    )}>
+      <div className="font-semibold mb-1">
+        {role === 'user' ? 'You' : 'Assistant'}
+      </div>
+      <div className="text-sm text-gray-200">
+        <AnimatePresence>
+          {words.map((word, index) => (
+            <AnimatedWord 
+              key={index} 
+              word={word} 
+              delay={index * 0.1} 
+            />
+          ))}
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+};
 
 const ArticleAssistant = ({ article }: { article: { title: string; content: string } | null }) => {
   const [question, setQuestion] = useState("");
