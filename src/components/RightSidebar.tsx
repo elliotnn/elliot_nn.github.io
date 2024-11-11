@@ -1,54 +1,66 @@
-import { Share2, ThumbsUp, MessageSquare, MessageCircle, X } from "lucide-react";
 import { Button } from "./ui/button";
 import ArticleAssistant from "./ArticleAssistant";
 import { useState } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const RightSidebar = ({ article }) => {
   const [showChat, setShowChat] = useState(false);
 
   const SidebarContent = () => (
-    <div className="h-full flex flex-col justify-center pt-32">
+    <div className="h-full flex flex-col justify-end pb-20">
       <div className="flex flex-col space-y-2">
         <Button 
           variant="ghost" 
-          className="w-12 h-12 p-0 justify-center"
+          size="icon" 
+          className="w-14 h-14"
           onClick={() => setShowChat(true)}
         >
-          <MessageCircle className="w-4 h-4" />
-        </Button>
-        <Button 
-          variant="ghost" 
-          className="w-12 h-12 p-0 justify-center"
-        >
-          <ThumbsUp className="w-4 h-4" />
-        </Button>
-        <Button 
-          variant="ghost" 
-          className="w-12 h-12 p-0 justify-center"
-        >
-          <MessageSquare className="w-4 h-4" />
-        </Button>
-        <Button 
-          variant="ghost" 
-          className="w-12 h-12 p-0 justify-center"
-        >
-          <Share2 className="w-4 h-4" />
+          <span className="sr-only">Open chat</span>
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+          </svg>
         </Button>
       </div>
     </div>
   );
 
   const ChatContent = () => (
-    <div className="relative h-full">
-      <Button
-        variant="ghost"
-        size="icon"
-        className="absolute right-0 top-0"
-        onClick={() => setShowChat(false)}
-      >
-        <X className="h-4 w-4" />
-      </Button>
-      <ArticleAssistant article={article} />
+    <div className="flex flex-col h-full">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-lg font-semibold">Article Assistant</h2>
+        <Button variant="ghost" size="icon" onClick={() => setShowChat(false)}>
+          <span className="sr-only">Close chat</span>
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+          </svg>
+        </Button>
+      </div>
+      <div className="flex-1 overflow-hidden">
+        <ArticleAssistant article={article} />
+      </div>
     </div>
   );
 
