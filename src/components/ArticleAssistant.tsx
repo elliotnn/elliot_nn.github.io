@@ -64,7 +64,6 @@ const useChatAssistant = (article: { title: string; content: string } | null) =>
   return { messages, isLoading, askQuestion };
 };
 
-// Message component
 const Message = ({ role, content }: { role: 'user' | 'assistant', content: string }) => (
   <div className={cn(
     "p-4 rounded-lg mb-4",
@@ -122,7 +121,7 @@ const ArticleAssistant = ({ article }: { article: { title: string; content: stri
         ))}
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 bg-wikitok-dark p-4 border-t border-border">
+      <div className="fixed bottom-0 left-0 right-0 bg-wikitok-dark p-4 border-t border-border">
         <form onSubmit={handleSubmit} className="flex gap-2">
           <Input
             placeholder="Ask a question..."
