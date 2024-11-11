@@ -8,7 +8,7 @@ const RightSidebar = ({ article }) => {
   const [showChat, setShowChat] = useState(false);
 
   const SidebarContent = () => (
-    <div className="h-full flex flex-col justify-end">
+    <div className="h-full flex flex-col justify-end pb-20">
       <div className="space-y-2 bg-black/20 backdrop-blur-sm p-4 rounded-lg">
         <Button variant="outline" className="w-full justify-start gap-2">
           <ThumbsUp className="w-4 h-4" /> Like
@@ -42,14 +42,14 @@ const RightSidebar = ({ article }) => {
           <X className="w-4 h-4" />
         </Button>
       </div>
-      <ScrollArea className="flex-1 pr-4">
+      <ScrollArea className="flex-1">
         <ArticleAssistant article={article} />
       </ScrollArea>
     </div>
   );
 
   return (
-    <div className={`fixed right-0 top-0 bottom-0 w-[350px] ${showChat ? 'bg-wikitok-dark border-l border-border p-4 pt-20 z-50' : 'bg-transparent'} overflow-hidden`}>
+    <div className={`fixed right-0 top-0 bottom-0 w-[350px] ${showChat ? 'bg-wikitok-dark border-l border-border p-4 pt-20' : 'bg-transparent'}`}>
       {showChat ? <ChatContent /> : <SidebarContent />}
     </div>
   );
