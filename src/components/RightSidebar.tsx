@@ -10,25 +10,21 @@ const RightSidebar = ({ article }) => {
   const SidebarContent = () => (
     <div className="h-full flex flex-col justify-end">
       <div className="space-y-2 bg-black/20 backdrop-blur-sm p-4 rounded-lg">
-        <Button variant="outline" className="w-full justify-start gap-2 sm:w-12 sm:h-12 sm:p-0 sm:justify-center">
-          <ThumbsUp className="w-4 h-4" /> 
-          <span className="hidden sm:hidden md:inline">Like</span>
+        <Button variant="outline" className="w-12 h-12 p-0 justify-center">
+          <ThumbsUp className="w-4 h-4" />
         </Button>
-        <Button variant="outline" className="w-full justify-start gap-2 sm:w-12 sm:h-12 sm:p-0 sm:justify-center">
+        <Button variant="outline" className="w-12 h-12 p-0 justify-center">
           <MessageSquare className="w-4 h-4" />
-          <span className="hidden sm:hidden md:inline">Comment</span>
         </Button>
-        <Button variant="outline" className="w-full justify-start gap-2 sm:w-12 sm:h-12 sm:p-0 sm:justify-center">
+        <Button variant="outline" className="w-12 h-12 p-0 justify-center">
           <Share2 className="w-4 h-4" />
-          <span className="hidden sm:hidden md:inline">Share</span>
         </Button>
         <Button 
           variant="outline" 
-          className="w-full justify-start gap-2 sm:w-12 sm:h-12 sm:p-0 sm:justify-center"
+          className="w-12 h-12 p-0 justify-center"
           onClick={() => setShowChat(true)}
         >
           <MessageCircle className="w-4 h-4" />
-          <span className="hidden sm:hidden md:inline">Chat</span>
         </Button>
       </div>
     </div>
