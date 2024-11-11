@@ -9,7 +9,7 @@ const RightSidebar = ({ article }) => {
 
   const SidebarContent = () => (
     <div className="h-full flex flex-col justify-end">
-      <div className="space-y-2">
+      <div className="space-y-2 bg-black/20 backdrop-blur-sm p-4 rounded-lg">
         <Button variant="outline" className="w-full justify-start gap-2">
           <ThumbsUp className="w-4 h-4" /> Like
         </Button>
