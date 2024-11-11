@@ -5,40 +5,25 @@ import { Textarea } from "./ui/textarea";
 import { Send } from "lucide-react";
 import { useToast } from "./ui/use-toast";
 
-interface ArticleAssistantProps {
-  article: {
-    title: string;
-    content: string;
-  } | null;
-}
-
-const ArticleAssistant = ({ article }: ArticleAssistantProps) => {
-  const [question, setQuestion] = useState("");
+// Separate the chat logic into a custom hook for better organization
+const useChatAssistant = (article: { title: string; content: string } | null) => {
   const [answer, setAnswer] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [apiKey, setApiKey] = useState("");
   const { toast } = useToast();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!article || !question.trim() || !apiKey.trim()) {
-      toast({
-        title: "Error",
-        description: "Please provide both a question and an API key.",
-        variant: "destructive",
-      });
-      return;
-    }
-
+  const askQuestion = async (question: string, apiKey: string) => {
+    if (!article) return;
+    
     setIsLoading(true);
     try {
-      const response = await fetch("https://api.gptengineer.app/assistant/chat", {
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${apiKey}`
         },
         body: JSON.stringify({
+          model: "gpt-4o-mini",
           messages: [
             {
               role: "system",
@@ -56,10 +41,12 @@ const ArticleAssistant = ({ article }: ArticleAssistantProps) => {
         }),
       });
 
-      if (!response.ok) throw new Error("Failed to get answer");
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       
       const data = await response.json();
-      setAnswer(data.message);
+      setAnswer(data.choices[0].message.content);
     } catch (error) {
       toast({
         title: "Error",
@@ -71,6 +58,29 @@ const ArticleAssistant = ({ article }: ArticleAssistantProps) => {
     }
   };
 
+  return { answer, isLoading, askQuestion };
+};
+
+// Main component
+const ArticleAssistant = ({ article }: { article: { title: string; content: string } | null }) => {
+  const [question, setQuestion] = useState("");
+  const [apiKey, setApiKey] = useState("");
+  const { answer, isLoading, askQuestion } = useChatAssistant(article);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!article || !question.trim() || !apiKey.trim()) {
+      toast({
+        title: "Error",
+        description: "Please provide both a question and an API key.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    await askQuestion(question, apiKey);
+  };
+
   if (!article) return null;
 
   return (
@@ -79,7 +89,7 @@ const ArticleAssistant = ({ article }: ArticleAssistantProps) => {
       <div className="space-y-2">
         <Input
           type="password"
-          placeholder="Enter your API key..."
+          placeholder="Enter your OpenAI API key..."
           value={apiKey}
           onChange={(e) => setApiKey(e.target.value)}
           className="font-mono"
