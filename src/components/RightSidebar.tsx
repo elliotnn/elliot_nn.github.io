@@ -2,9 +2,38 @@ import { Share2, ThumbsUp, MessageSquare, MessageCircle, X } from "lucide-react"
 import { Button } from "./ui/button";
 import ArticleAssistant from "./ArticleAssistant";
 import { useState } from "react";
+import { useToast } from "./ui/use-toast";
 
 const RightSidebar = ({ article }) => {
   const [showChat, setShowChat] = useState(false);
+  const [liked, setLiked] = useState(false);
+  const { toast } = useToast();
+
+  const handleLike = () => {
+    setLiked(!liked);
+    toast({
+      title: liked ? "Removed like" : "Added like",
+      description: liked ? "You've removed your like" : "You've liked this article",
+      duration: 2000,
+    });
+  };
+
+  const handleComment = () => {
+    toast({
+      title: "Comments",
+      description: "Comments feature coming soon!",
+      duration: 2000,
+    });
+  };
+
+  const handleShare = () => {
+    navigator.clipboard.writeText(window.location.href);
+    toast({
+      title: "Link copied",
+      description: "Article link copied to clipboard",
+      duration: 2000,
+    });
+  };
 
   const SidebarContent = () => (
     <div className="h-full flex flex-col justify-center pt-32">
@@ -18,19 +47,22 @@ const RightSidebar = ({ article }) => {
         </Button>
         <Button 
           variant="ghost" 
-          className="w-12 h-12 p-0 justify-center hover:text-wikitok-blue"
+          className={`w-12 h-12 p-0 justify-center hover:text-wikitok-blue ${liked ? 'text-wikitok-blue' : ''}`}
+          onClick={handleLike}
         >
           <ThumbsUp className="w-4 h-4" />
         </Button>
         <Button 
           variant="ghost" 
           className="w-12 h-12 p-0 justify-center hover:text-wikitok-blue"
+          onClick={handleComment}
         >
           <MessageSquare className="w-4 h-4" />
         </Button>
         <Button 
           variant="ghost" 
           className="w-12 h-12 p-0 justify-center hover:text-wikitok-blue"
+          onClick={handleShare}
         >
           <Share2 className="w-4 h-4" />
         </Button>
