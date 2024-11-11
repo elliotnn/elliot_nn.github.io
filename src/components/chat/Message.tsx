@@ -1,12 +1,24 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { AnimatedWord } from "./AnimatedWord";
+import { useEffect, useRef } from "react";
 
 export const Message = ({ role, content }: { role: 'user' | 'assistant', content: string }) => {
   const words = content.split(' ');
+  const messageRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    if (messageRef.current) {
+      messageRef.current.scrollIntoView({ 
+        behavior: "smooth",
+        block: "end"
+      });
+    }
+  }, [words]);
   
   return (
     <motion.div 
+      ref={messageRef}
       initial={{ height: 0, opacity: 0 }}
       animate={{ height: "auto", opacity: 1 }}
       transition={{ duration: 0.3 }}
