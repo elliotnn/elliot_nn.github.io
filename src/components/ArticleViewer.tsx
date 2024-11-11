@@ -106,13 +106,8 @@ const ArticleViewer = ({ articles: initialArticles, onArticleChange }) => {
               alt={article.title}
               className="w-full h-full object-cover"
             />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/30 to-black/60" />
           </div>
-          
-          {/* Title positioned at the top */}
-          <div className="fixed top-0 left-0 right-0 z-30 bg-black/50 backdrop-blur-sm p-4">
-            <h1 className="text-4xl font-bold text-white">{article.title}</h1>
-          </div>
-
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{
@@ -120,18 +115,20 @@ const ArticleViewer = ({ articles: initialArticles, onArticleChange }) => {
               y: isVisible && currentIndex === index ? 0 : 20,
             }}
             transition={{ duration: 0.5 }}
-            className="absolute bottom-0 left-0 right-0 max-h-[70vh] overflow-y-auto flex flex-col p-8 pr-24"
+            className="absolute bottom-0 left-0 right-0 max-h-[70vh] overflow-y-auto flex flex-col-reverse p-8 pr-24"
           >
             <div className="flex items-center space-x-2 text-sm text-gray-300 mb-4">
               <span>{article.readTime} min read</span>
               <span>•</span>
               <span>{article.views.toLocaleString()} views</span>
             </div>
-            <p className="text-lg leading-relaxed text-white">
+            <p className="text-lg leading-relaxed">
               {currentIndex === index ? displayedText : article.content}
             </p>
+            <div className="sticky -top-8 z-10 pb-4">
+              <h1 className="text-4xl font-bold">{article.title}</h1>
+            </div>
           </motion.div>
-          
           {currentIndex === index && (
             <div className="absolute bottom-0 left-0 right-0 z-20">
               <Progress 
