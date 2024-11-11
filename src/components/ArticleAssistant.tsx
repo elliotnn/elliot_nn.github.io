@@ -128,59 +128,51 @@ const ArticleAssistant = ({ article }: { article: { title: string; content: stri
 
   return (
     <div className="flex flex-col h-full">
-      <div className="mb-4 flex items-center gap-2">
-        <Input
-          type="password"
-          placeholder="Enter your OpenAI API key..."
-          value={apiKey}
-          onChange={(e) => setApiKey(e.target.value)}
-          className="font-mono"
-        />
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="outline" size="icon">
-              <Key className="h-4 w-4" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-80">
-            <div className="space-y-2">
-              <h4 className="font-medium">Change API Key</h4>
-              <Input
-                type="password"
-                placeholder="Enter your OpenAI API key..."
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                className="font-mono"
-              />
-            </div>
-          </PopoverContent>
-        </Popover>
-      </div>
-
-      <div className="flex-1 overflow-y-auto mb-4">
+      <div className="flex-1 overflow-y-auto">
         {messages.map((message, index) => (
           <Message key={index} {...message} />
         ))}
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="fixed bottom-0 right-0 w-[350px] bg-wikitok-dark shadow-lg border-t border-border">
-        <form onSubmit={handleSubmit} className="flex gap-2 p-4">
+      <div className="mt-auto border-t border-border bg-wikitok-dark p-4">
+        <div className="flex items-center gap-2">
           <Input
+            type="text"
             placeholder="Ask a question..."
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
             disabled={isLoading}
             className="flex-1"
           />
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" size="icon">
+                <Key className="h-4 w-4" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80">
+              <div className="space-y-2">
+                <h4 className="font-medium">Change API Key</h4>
+                <Input
+                  type="password"
+                  placeholder="Enter your OpenAI API key..."
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                  className="font-mono"
+                />
+              </div>
+            </PopoverContent>
+          </Popover>
           <Button 
             type="submit" 
             disabled={isLoading || !question.trim() || !apiKey.trim()}
             size="icon"
+            onClick={handleSubmit}
           >
             <Send className="w-4 h-4" />
           </Button>
-        </form>
+        </div>
       </div>
     </div>
   );
