@@ -17,7 +17,7 @@ const useChatAssistant = (article: { title: string; content: string } | null) =>
     try {
       // Add user message immediately
       setMessages(prev => [...prev, { role: 'user', content: question }]);
-
+  
       const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -40,7 +40,7 @@ const useChatAssistant = (article: { title: string; content: string } | null) =>
           ]
         }),
       });
-
+  
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -116,13 +116,13 @@ const ArticleAssistant = ({ article }: { article: { title: string; content: stri
         />
       </div>
 
-      <div className="flex-1 overflow-y-auto mb-4 border-b border-border">
+      <div className="flex-1 overflow-y-auto mb-4">
         {messages.map((message, index) => (
           <Message key={index} {...message} />
         ))}
       </div>
 
-      <div className="fixed bottom-0 right-0 w-[350px] bg-background shadow-lg border-t border-border">
+      <div className="fixed bottom-0 right-0 w-[350px] bg-wikitok-dark shadow-lg border-t border-border">
         <form onSubmit={handleSubmit} className="flex gap-2 p-4">
           <Input
             placeholder="Ask a question..."

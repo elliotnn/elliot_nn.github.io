@@ -32,16 +32,6 @@ const RightSidebar = ({ article }) => {
 
   const ChatContent = () => (
     <div className="flex flex-col h-full">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold">Chat about {article?.title}</h2>
-        <Button 
-          variant="ghost" 
-          size="icon"
-          onClick={() => setShowChat(false)}
-        >
-          <X className="w-4 h-4" />
-        </Button>
-      </div>
       <ScrollArea className="flex-1 pr-4">
         <ArticleAssistant article={article} />
       </ScrollArea>
