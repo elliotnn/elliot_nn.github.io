@@ -31,15 +31,11 @@ const RightSidebar = ({ article }) => {
   );
 
   const ChatContent = () => (
-    <div className="flex flex-col h-full">
-      <ScrollArea className="flex-1 pr-4">
-        <ArticleAssistant article={article} />
-      </ScrollArea>
-    </div>
+    <ArticleAssistant article={article} />
   );
 
   return (
-    <div className={`fixed right-0 top-0 bottom-0 w-[350px] ${showChat ? 'bg-wikitok-dark border-l border-border p-4 pt-20 z-50' : 'bg-transparent'} overflow-hidden`}>
+    <div className={`fixed right-0 top-0 bottom-0 w-[350px] ${showChat ? 'bg-wikitok-dark border-l border-border p-4 z-50' : 'bg-transparent'} overflow-hidden`}>
       {showChat ? <ChatContent /> : <SidebarContent />}
     </div>
   );
