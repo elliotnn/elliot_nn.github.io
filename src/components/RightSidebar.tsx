@@ -9,18 +9,18 @@ const RightSidebar = ({ article }) => {
 
   const SidebarContent = () => (
     <div className="h-full flex flex-col justify-end">
-      <div className="flex flex-col space-y-2 bg-black/20 backdrop-blur-sm p-4 rounded-lg">
-        <Button variant="outline" className="w-12 h-12 p-0 justify-center">
+      <div className="flex flex-col space-y-2">
+        <Button variant="ghost" className="w-12 h-12 p-0 justify-center">
           <ThumbsUp className="w-4 h-4" />
         </Button>
-        <Button variant="outline" className="w-12 h-12 p-0 justify-center">
+        <Button variant="ghost" className="w-12 h-12 p-0 justify-center">
           <MessageSquare className="w-4 h-4" />
         </Button>
-        <Button variant="outline" className="w-12 h-12 p-0 justify-center">
+        <Button variant="ghost" className="w-12 h-12 p-0 justify-center">
           <Share2 className="w-4 h-4" />
         </Button>
         <Button 
-          variant="outline" 
+          variant="ghost" 
           className="w-12 h-12 p-0 justify-center"
           onClick={() => setShowChat(true)}
         >
