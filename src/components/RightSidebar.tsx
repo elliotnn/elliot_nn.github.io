@@ -8,7 +8,7 @@ const RightSidebar = ({ article }) => {
   const [showChat, setShowChat] = useState(false);
 
   const SidebarContent = () => (
-    <div className="h-full flex flex-col justify-start">
+    <div className="h-full flex flex-col justify-start pt-20">
       <div className="flex flex-col space-y-2">
         <Button 
           variant="ghost" 
