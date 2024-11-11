@@ -49,7 +49,7 @@ const RightSidebar = ({ article }) => {
   );
 
   return (
-    <div className="fixed right-0 top-0 bottom-0 w-[350px] bg-wikitok-dark border-l border-border p-4 pt-20 overflow-hidden">
+    <div className={`fixed right-0 top-0 bottom-0 w-[350px] ${showChat ? 'bg-wikitok-dark border-l border-border p-4 pt-20' : 'bg-transparent'} overflow-hidden`}>
       {showChat ? <ChatContent /> : <SidebarContent />}
     </div>
   );
