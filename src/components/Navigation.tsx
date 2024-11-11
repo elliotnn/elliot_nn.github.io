@@ -1,4 +1,4 @@
-import { Search, Compass } from "lucide-react";
+import { Search, Compass, BookOpen } from "lucide-react";
 import {
   Command,
   CommandDialog,
@@ -11,12 +11,14 @@ import {
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { searchArticles, getRandomArticles } from "../services/wikipediaService";
+import { searchScholarArticles } from "../services/scholarService";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/components/ui/use-toast";
 
 const Navigation = () => {
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
+  const [searchType, setSearchType] = useState<"wiki" | "scholar">("wiki");
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
@@ -30,10 +32,18 @@ const Navigation = () => {
     }
   }, [searchParams, location.pathname]);
 
-  const { data: searchResults, isLoading } = useQuery({
-    queryKey: ["search", searchValue],
+  const { data: wikiResults, isLoading: wikiLoading } = useQuery({
+    queryKey: ["wiki-search", searchValue],
     queryFn: () => searchArticles(searchValue),
-    enabled: searchValue.length > 0,
+    enabled: searchValue.length > 0 && searchType === "wiki",
+    gcTime: 1000 * 60 * 5,
+    staleTime: 0,
+  });
+
+  const { data: scholarResults, isLoading: scholarLoading } = useQuery({
+    queryKey: ["scholar-search", searchValue],
+    queryFn: () => searchScholarArticles(searchValue),
+    enabled: searchValue.length > 0 && searchType === "scholar",
     gcTime: 1000 * 60 * 5,
     staleTime: 0,
   });
@@ -47,9 +57,10 @@ const Navigation = () => {
       duration: 2000,
     });
     
+    const currentResults = searchType === "wiki" ? wikiResults : scholarResults;
     const reorderedResults = [
       selectedArticle,
-      ...(searchResults || []).filter(article => article.id !== selectedArticle.id)
+      ...(currentResults || []).filter(article => article.id !== selectedArticle.id)
     ];
     
     navigate(`/?q=${encodeURIComponent(title)}`, {
@@ -65,7 +76,7 @@ const Navigation = () => {
   };
 
   const handleRandomArticle = async () => {
-    setSearchValue(""); // Clear search value when getting random article
+    setSearchValue("");
     toast({
       title: "Loading random article",
       description: "Finding something interesting for you...",
@@ -89,6 +100,8 @@ const Navigation = () => {
   };
 
   const isDiscoverPage = location.pathname === "/discover";
+  const isLoading = searchType === "wiki" ? wikiLoading : scholarLoading;
+  const searchResults = searchType === "wiki" ? wikiResults : scholarResults;
 
   return (
     <>
@@ -113,6 +126,12 @@ const Navigation = () => {
           </span>
         </div>
         <div className="flex space-x-6">
+          <BookOpen 
+            className={`w-5 h-5 cursor-pointer transition-colors ${
+              searchType === "scholar" ? "text-wikitok-red" : "text-white"
+            }`}
+            onClick={() => setSearchType(searchType === "wiki" ? "scholar" : "wiki")}
+          />
           <Compass 
             className={`w-5 h-5 cursor-pointer transition-colors ${
               location.pathname === "/discover" ? "text-wikitok-red" : "text-white"
@@ -128,7 +147,7 @@ const Navigation = () => {
       >
         <Command shouldFilter={false}>
           <CommandInput 
-            placeholder="Search articles..." 
+            placeholder={`Search ${searchType === "wiki" ? "Wikipedia" : "Google Scholar"}...`}
             value={searchValue}
             onValueChange={setSearchValue}
             className="border-none focus:ring-0"
@@ -147,7 +166,7 @@ const Navigation = () => {
               <CommandEmpty>No results found.</CommandEmpty>
             )}
             {!isLoading && searchResults && searchResults.length > 0 && (
-              <CommandGroup heading="Articles">
+              <CommandGroup heading={searchType === "wiki" ? "Wikipedia Articles" : "Scholar Articles"}>
                 {searchResults.map((result) => (
                   <CommandItem
                     key={result.id}
