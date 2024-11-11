@@ -1,4 +1,3 @@
-import { Hash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const LeftSidebar = ({ article, onTagClick }) => {
@@ -18,7 +17,6 @@ const LeftSidebar = ({ article, onTagClick }) => {
             className="flex items-center space-x-2 text-sm bg-black/50 backdrop-blur-sm px-3 py-1.5 rounded-full hover:bg-black/70 transition-colors cursor-pointer"
             onClick={() => handleTagClick(tag)}
           >
-            <Hash className="w-3 h-3" />
             <span className="text-xs">{tag}</span>
           </div>
         ))}
