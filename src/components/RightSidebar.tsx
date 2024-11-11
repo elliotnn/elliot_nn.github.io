@@ -33,7 +33,7 @@ const RightSidebar = ({ article }) => {
       </div>
       
       {showChat && (
-        <div className="fixed right-[350px] top-0 bottom-0 w-[400px] bg-background border-l border-border p-4 pt-20 overflow-hidden animate-in slide-in-from-right duration-300">
+        <div className="fixed right-[350px] top-0 bottom-0 w-[400px] bg-wikitok-dark border-l border-border p-4 pt-20 overflow-hidden animate-in slide-in-from-right duration-300">
           <div className="flex flex-col h-full">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold">Chat about {article?.title}</h2>
