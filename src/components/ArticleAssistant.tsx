@@ -12,7 +12,7 @@ const useChatAssistant = (article: { title: string; content: string } | null) =>
 
   const askQuestion = async (question: string, apiKey: string) => {
     if (!article) return;
-    
+
     setIsLoading(true);
     try {
       // Add user message immediately
@@ -133,14 +133,14 @@ const ArticleAssistant = ({ article }: { article: { title: string; content: stri
         />
       </div>
 
-      <div className="flex-1 overflow-y-auto mb-4">
+      <div className="flex-1 overflow-y-auto mb-4 space-y-4">
         {messages.map((message, index) => (
           <Message key={index} {...message} />
         ))}
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="fixed bottom-0 right-0 w-[350px] bg-wikitok-dark shadow-lg border-t border-border">
+      <div className="sticky bottom-0 right-0 w-full bg-wikitok-dark shadow-lg border-t border-border">
         <form onSubmit={handleSubmit} className="flex gap-2 p-4">
           <Input
             placeholder="Ask a question..."
