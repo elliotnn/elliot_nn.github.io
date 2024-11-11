@@ -122,10 +122,10 @@ const ArticleViewer = ({ articles: initialArticles, onArticleChange }) => {
               <span>•</span>
               <span>{article.views.toLocaleString()} views</span>
             </div>
-            <p className="text-lg leading-relaxed mb-4">
+            <p className="text-lg leading-relaxed">
               {currentIndex === index ? displayedText : article.content}
             </p>
-            <div className="sticky -top-8 z-10 pb-4 bg-gradient-to-b from-black/80 via-black/60 to-transparent">
+            <div className="sticky -top-8 z-10 pb-4">
               <h1 className="text-4xl font-bold">{article.title}</h1>
             </div>
           </motion.div>
