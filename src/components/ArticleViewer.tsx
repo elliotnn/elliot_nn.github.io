@@ -115,7 +115,7 @@ const ArticleViewer = ({ articles: initialArticles, onArticleChange }) => {
               y: isVisible && currentIndex === index ? 0 : 20,
             }}
             transition={{ duration: 0.5 }}
-            className="relative z-10 text-white p-8 max-w-3xl mx-auto"
+            className="relative z-10 text-white p-8 max-w-3xl mx-auto pr-24"
           >
             <h1 className="text-4xl font-bold mb-4">{article.title}</h1>
             <p className="text-lg leading-relaxed mb-12">
