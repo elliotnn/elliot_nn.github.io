@@ -1,9 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { Send } from "lucide-react";
+import { Send, Key } from "lucide-react";
 import { useToast } from "./ui/use-toast";
 import { cn } from "@/lib/utils";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 const useChatAssistant = (article: { title: string; content: string } | null) => {
   const [messages, setMessages] = useState<Array<{ role: 'user' | 'assistant', content: string }>>([]);
@@ -123,7 +128,7 @@ const ArticleAssistant = ({ article }: { article: { title: string; content: stri
 
   return (
     <div className="flex flex-col h-full">
-      <div className="mb-4">
+      <div className="mb-4 flex items-center gap-2">
         <Input
           type="password"
           placeholder="Enter your OpenAI API key..."
@@ -131,6 +136,25 @@ const ArticleAssistant = ({ article }: { article: { title: string; content: stri
           onChange={(e) => setApiKey(e.target.value)}
           className="font-mono"
         />
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline" size="icon">
+              <Key className="h-4 w-4" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-80">
+            <div className="space-y-2">
+              <h4 className="font-medium">Change API Key</h4>
+              <Input
+                type="password"
+                placeholder="Enter your OpenAI API key..."
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                className="font-mono"
+              />
+            </div>
+          </PopoverContent>
+        </Popover>
       </div>
 
       <div className="flex-1 overflow-y-auto mb-4">
