@@ -49,6 +49,9 @@ const ArticleAssistant = ({ article }: { article: { title: string; content: stri
 
   return (
     <div className="flex flex-col h-full">
+      <div className="p-4 border-b border-border">
+        <h2 className="text-lg font-semibold">Chat about: {article.title}</h2>
+      </div>
       <div className="flex-1 overflow-y-auto">
         {messages.map((message, index) => (
           <Message key={index} {...message} />
