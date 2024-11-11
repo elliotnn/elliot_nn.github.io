@@ -16,11 +16,19 @@ const ArticleAssistant = ({ article }: ArticleAssistantProps) => {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [apiKey, setApiKey] = useState("");
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!article || !question.trim()) return;
+    if (!article || !question.trim() || !apiKey.trim()) {
+      toast({
+        title: "Error",
+        description: "Please provide both a question and an API key.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     setIsLoading(true);
     try {
@@ -28,6 +36,7 @@ const ArticleAssistant = ({ article }: ArticleAssistantProps) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${apiKey}`
         },
         body: JSON.stringify({
           messages: [
@@ -54,7 +63,7 @@ const ArticleAssistant = ({ article }: ArticleAssistantProps) => {
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to get an answer. Please try again.",
+        description: "Failed to get an answer. Please check your API key and try again.",
         variant: "destructive",
       });
     } finally {
@@ -67,6 +76,15 @@ const ArticleAssistant = ({ article }: ArticleAssistantProps) => {
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold">Ask about this article</h3>
+      <div className="space-y-2">
+        <Input
+          type="password"
+          placeholder="Enter your API key..."
+          value={apiKey}
+          onChange={(e) => setApiKey(e.target.value)}
+          className="font-mono"
+        />
+      </div>
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
           placeholder="Ask a question..."
@@ -77,7 +95,7 @@ const ArticleAssistant = ({ article }: ArticleAssistantProps) => {
         <Button 
           type="submit" 
           className="w-full" 
-          disabled={isLoading || !question.trim()}
+          disabled={isLoading || !question.trim() || !apiKey.trim()}
         >
           {isLoading ? (
             "Thinking..."
