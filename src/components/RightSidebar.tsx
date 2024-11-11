@@ -31,7 +31,17 @@ const RightSidebar = ({ article }) => {
   );
 
   const ChatContent = () => (
-    <ArticleAssistant article={article} />
+    <div className="relative h-full">
+      <Button
+        variant="ghost"
+        size="icon"
+        className="absolute right-0 top-0 z-50"
+        onClick={() => setShowChat(false)}
+      >
+        <X className="h-4 w-4" />
+      </Button>
+      <ArticleAssistant article={article} />
+    </div>
   );
 
   return (
