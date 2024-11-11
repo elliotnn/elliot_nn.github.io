@@ -87,6 +87,7 @@ const ArticleAssistant = ({ article }: { article: { title: string; content: stri
   const [question, setQuestion] = useState("");
   const [apiKey, setApiKey] = useState("");
   const { messages, isLoading, askQuestion } = useChatAssistant(article);
+  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,28 +118,30 @@ const ArticleAssistant = ({ article }: { article: { title: string; content: stri
         />
       </div>
 
-      <div className="flex-1 overflow-y-auto mb-4">
+      <div className="flex-1 overflow-y-auto mb-4 pr-2">
         {messages.map((message, index) => (
           <Message key={index} {...message} />
         ))}
       </div>
 
-      <form onSubmit={handleSubmit} className="flex gap-2">
-        <Input
-          placeholder="Ask a question..."
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-          disabled={isLoading}
-          className="flex-1"
-        />
-        <Button 
-          type="submit" 
-          disabled={isLoading || !question.trim() || !apiKey.trim()}
-          size="icon"
-        >
-          <Send className="w-4 h-4" />
-        </Button>
-      </form>
+      <div className="sticky bottom-0 bg-wikitok-dark pt-2">
+        <form onSubmit={handleSubmit} className="flex gap-2">
+          <Input
+            placeholder="Ask a question..."
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            disabled={isLoading}
+            className="flex-1"
+          />
+          <Button 
+            type="submit" 
+            disabled={isLoading || !question.trim() || !apiKey.trim()}
+            size="icon"
+          >
+            <Send className="w-4 h-4" />
+          </Button>
+        </form>
+      </div>
     </div>
   );
 };
