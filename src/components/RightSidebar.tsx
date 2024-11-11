@@ -8,8 +8,15 @@ const RightSidebar = ({ article }) => {
   const [showChat, setShowChat] = useState(false);
 
   const SidebarContent = () => (
-    <div className="h-full flex flex-col justify-end">
+    <div className="h-full flex flex-col justify-start">
       <div className="flex flex-col space-y-2">
+        <Button 
+          variant="ghost" 
+          className="w-12 h-12 p-0 justify-center"
+          onClick={() => setShowChat(true)}
+        >
+          <MessageCircle className="w-4 h-4" />
+        </Button>
         <Button variant="ghost" className="w-12 h-12 p-0 justify-center">
           <ThumbsUp className="w-4 h-4" />
         </Button>
@@ -18,13 +25,6 @@ const RightSidebar = ({ article }) => {
         </Button>
         <Button variant="ghost" className="w-12 h-12 p-0 justify-center">
           <Share2 className="w-4 h-4" />
-        </Button>
-        <Button 
-          variant="ghost" 
-          className="w-12 h-12 p-0 justify-center"
-          onClick={() => setShowChat(true)}
-        >
-          <MessageCircle className="w-4 h-4" />
         </Button>
       </div>
     </div>
