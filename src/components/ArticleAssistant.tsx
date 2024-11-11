@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Send } from "lucide-react";
@@ -88,6 +88,15 @@ const ArticleAssistant = ({ article }: { article: { title: string; content: stri
   });
   const { messages, isLoading, askQuestion } = useChatAssistant(article);
   const { toast } = useToast();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   useEffect(() => {
     if (apiKey) {
@@ -128,6 +137,7 @@ const ArticleAssistant = ({ article }: { article: { title: string; content: stri
         {messages.map((message, index) => (
           <Message key={index} {...message} />
         ))}
+        <div ref={messagesEndRef} />
       </div>
 
       <div className="fixed bottom-0 right-0 w-[350px] bg-wikitok-dark shadow-lg border-t border-border">
