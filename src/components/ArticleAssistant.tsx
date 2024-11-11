@@ -122,7 +122,7 @@ const ArticleAssistant = ({ article }: { article: { title: string; content: stri
         ))}
       </div>
 
-      <div className="sticky bottom-0 bg-background shadow-lg border-t border-border mt-auto">
+      <div className="fixed bottom-0 right-0 w-[350px] bg-background shadow-lg border-t border-border">
         <form onSubmit={handleSubmit} className="flex gap-2 p-4">
           <Input
             placeholder="Ask a question..."
