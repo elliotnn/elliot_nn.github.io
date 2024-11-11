@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Send } from "lucide-react";
@@ -83,9 +83,17 @@ const Message = ({ role, content }: { role: 'user' | 'assistant', content: strin
 
 const ArticleAssistant = ({ article }: { article: { title: string; content: string } | null }) => {
   const [question, setQuestion] = useState("");
-  const [apiKey, setApiKey] = useState("");
+  const [apiKey, setApiKey] = useState(() => {
+    return localStorage.getItem("openai_api_key") || "";
+  });
   const { messages, isLoading, askQuestion } = useChatAssistant(article);
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (apiKey) {
+      localStorage.setItem("openai_api_key", apiKey);
+    }
+  }, [apiKey]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
