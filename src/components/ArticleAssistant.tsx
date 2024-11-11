@@ -105,24 +105,24 @@ const ArticleAssistant = ({ article }: { article: { title: string; content: stri
   if (!article) return null;
 
   return (
-    <div className="flex flex-col h-full relative">
-      <div className="absolute top-0 left-0 right-0 mb-4">
+    <div className="flex flex-col h-full">
+      <div className="mb-4">
         <Input
           type="password"
           placeholder="Enter your OpenAI API key..."
           value={apiKey}
           onChange={(e) => setApiKey(e.target.value)}
-          className="font-mono mb-2"
+          className="font-mono"
         />
       </div>
 
-      <div className="flex-1 overflow-y-auto mt-16 mb-[72px] pr-2">
+      <div className="flex-1 overflow-y-auto mb-4">
         {messages.map((message, index) => (
           <Message key={index} {...message} />
         ))}
       </div>
 
-      <div className="fixed bottom-[5px] left-0 right-0 bg-wikitok-dark p-4 border-t border-border">
+      <div className="bg-wikitok-dark border-t border-border p-4">
         <form onSubmit={handleSubmit} className="flex gap-2">
           <Input
             placeholder="Ask a question..."
