@@ -12,7 +12,7 @@ const ArticleAssistant = ({ article }: { article: { title: string; content: stri
   const [apiKey, setApiKey] = useState(() => {
     return localStorage.getItem("openai_api_key") || "";
   });
-  const { messages, isLoading, askQuestion } = useChatAssistant(article);
+  const { messages, isLoading, askQuestion, generateInitialQuestion } = useChatAssistant(article);
   const { toast } = useToast();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -29,6 +29,12 @@ const ArticleAssistant = ({ article }: { article: { title: string; content: stri
       localStorage.setItem("openai_api_key", apiKey);
     }
   }, [apiKey]);
+
+  useEffect(() => {
+    if (article && apiKey) {
+      generateInitialQuestion(apiKey);
+    }
+  }, [article, apiKey]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

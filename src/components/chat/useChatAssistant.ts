@@ -6,6 +6,56 @@ export const useChatAssistant = (article: { title: string; content: string } | n
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
+  const generateInitialQuestion = async (apiKey: string) => {
+    if (!article) return;
+    
+    setIsLoading(true);
+    try {
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model: "gpt-4o",
+          messages: [
+            {
+              role: "system",
+              content: `You are an AI assistant tasked with generating an engaging question about the following ${article.title.includes("arXiv") ? "research paper" : "article"}. 
+              Generate ONE interesting question that would help the reader better understand the content.
+              Make the question concise and specific to the content.
+              
+              Title: ${article.title}
+              Full Content: ${article.content}`
+            },
+            {
+              role: "user",
+              content: "Generate an interesting question about this content."
+            }
+          ]
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      const question = data.choices[0].message.content;
+      
+      setMessages(prev => [...prev, { role: 'assistant', content: question }]);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to generate initial question. Please check your API key.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const askQuestion = async (question: string, apiKey: string) => {
     if (!article) return;
     
@@ -60,5 +110,5 @@ export const useChatAssistant = (article: { title: string; content: string } | n
     }
   };
 
-  return { messages, isLoading, askQuestion };
+  return { messages, isLoading, askQuestion, generateInitialQuestion };
 };
