@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Progress } from "./ui/progress";
 import { getRandomArticles, getRelatedArticles } from "../services/wikipediaService";
+import { searchArxivPapers } from "../services/arxivService";
 
 const ArticleViewer = ({ articles: initialArticles, onArticleChange }) => {
   const [articles, setArticles] = useState(initialArticles);
@@ -14,18 +15,52 @@ const ArticleViewer = ({ articles: initialArticles, onArticleChange }) => {
   const textContainerRef = useRef<HTMLDivElement>(null);
   const currentArticle = articles[currentIndex];
 
-  const loadMoreArticles = useCallback(async () => {
+  const loadMoreContent = useCallback(async () => {
     if (isLoading) return;
     
     try {
       setIsLoading(true);
-      // Get related articles based on the current article
-      const newArticles = currentArticle 
-        ? await getRelatedArticles(currentArticle)
-        : await getRandomArticles(3);
-      setArticles(prev => [...prev, ...newArticles]);
+      let newContent;
+      
+      // Check if current content is from arXiv
+      const isCurrentArxiv = currentArticle?.title?.includes("arXiv");
+      
+      if (currentArticle) {
+        if (isCurrentArxiv) {
+          // If current is arXiv, try to get related papers based on tags
+          const tags = currentArticle.tags || [];
+          if (tags.length > 0) {
+            const searchQuery = tags.join(" OR ");
+            newContent = await searchArxivPapers(searchQuery, 3);
+            if (!newContent || newContent.length === 0) {
+              // Fallback to random papers if no related ones found
+              newContent = await searchArxivPapers("", 3);
+            }
+          } else {
+            // No tags, get random papers
+            newContent = await searchArxivPapers("", 3);
+          }
+        } else {
+          // If current is Wikipedia, try to get related articles
+          newContent = await getRelatedArticles(currentArticle);
+          if (!newContent || newContent.length === 0) {
+            newContent = await getRandomArticles(3);
+          }
+        }
+      } else {
+        // No current article, get random content
+        const randomChoice = Math.random() > 0.5;
+        newContent = randomChoice 
+          ? await searchArxivPapers("", 3)
+          : await getRandomArticles(3);
+      }
+      
+      setArticles(prev => [...prev, ...newContent]);
     } catch (error) {
-      console.error("Failed to load more articles", error);
+      console.error("Failed to load more content", error);
+      // Fallback to random articles if there's an error
+      const randomArticles = await getRandomArticles(3);
+      setArticles(prev => [...prev, ...randomArticles]);
     } finally {
       setIsLoading(false);
     }
@@ -122,12 +157,15 @@ const ArticleViewer = ({ articles: initialArticles, onArticleChange }) => {
             transition={{ duration: 0.5 }}
             className="absolute bottom-0 left-0 right-0 flex flex-col"
           >
-            {/* Fixed title section */}
             <div className="px-8 pt-6 pb-4 z-20">
               <h1 className="text-4xl font-bold mb-2">{article.title}</h1>
+              {article.title.includes("arXiv") && (
+                <span className="bg-wikitok-red text-white px-2 py-1 rounded-full text-sm">
+                  Research Paper
+                </span>
+              )}
             </div>
 
-            {/* Scrollable content section */}
             <div 
               ref={textContainerRef}
               className="max-h-[50vh] overflow-y-auto px-8 pb-8 flex flex-col-reverse"
@@ -139,7 +177,7 @@ const ArticleViewer = ({ articles: initialArticles, onArticleChange }) => {
                 <div className="flex items-center space-x-2 text-sm text-gray-300 mt-4">
                   <span>{article.readTime} min read</span>
                   <span>•</span>
-                  <span>{article.views.toLocaleString()} views</span>
+                  <span>{article.views?.toLocaleString() || 'Research Paper'}</span>
                 </div>
               </div>
             </div>
@@ -158,7 +196,7 @@ const ArticleViewer = ({ articles: initialArticles, onArticleChange }) => {
       ))}
       {isLoading && (
         <div className="h-screen w-screen flex items-center justify-center">
-          <div className="text-white">Loading more articles...</div>
+          <div className="text-white">Loading more content...</div>
         </div>
       )}
     </main>
