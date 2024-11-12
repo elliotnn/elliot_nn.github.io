@@ -64,7 +64,7 @@ const Navigation = () => {
     ];
     
     navigate(`/?q=${encodeURIComponent(title)}`, {
-      state: { reorderedResults }
+      state: { reorderedResults, mode: searchType }
     });
   };
 
@@ -82,7 +82,6 @@ const Navigation = () => {
       description: "Finding something interesting for you...",
       duration: 2000,
     });
-    // Implement random article functionality here if needed
   };
 
   const handleDiscoverClick = () => {
@@ -92,6 +91,12 @@ const Navigation = () => {
     } else {
       navigate("/discover");
     }
+  };
+
+  const handleModeToggle = () => {
+    const newMode = searchType === "wiki" ? "arxiv" : "wiki";
+    setSearchType(newMode);
+    navigate("/", { state: { mode: newMode, forceReload: true } });
   };
 
   const isDiscoverPage = location.pathname === "/discover";
@@ -125,7 +130,7 @@ const Navigation = () => {
             className={`w-5 h-5 cursor-pointer transition-colors ${
               searchType === "arxiv" ? "text-wikitok-red" : "text-white"
             }`}
-            onClick={() => setSearchType(searchType === "wiki" ? "arxiv" : "wiki")}
+            onClick={handleModeToggle}
           />
           <Compass 
             className={`w-5 h-5 cursor-pointer transition-colors ${
