@@ -1,7 +1,9 @@
 import { useToast } from "@/components/ui/use-toast";
+import { useNavigate } from "react-router-dom";
 
 export const NavigationLogo = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleRandomArticle = async () => {
     toast({
@@ -9,6 +11,7 @@ export const NavigationLogo = () => {
       description: "Finding something interesting for you...",
       duration: 2000,
     });
+    navigate('/');
   };
 
   return (
