@@ -20,18 +20,18 @@ export const useChatAssistant = (article: { title: string; content: string } | n
           "Authorization": `Bearer ${apiKey}`
         },
         body: JSON.stringify({
-          model: "gpt-4o-mini",
+          model: "gpt-4o",
           messages: [
             {
               role: "system",
-              content: `You are a helpful assistant answering questions about the following Wikipedia article. 
+              content: `You are a helpful assistant answering questions about the following ${article.title.includes("arXiv") ? "research paper" : "Wikipedia article"}. 
               Keep your responses concise and to the point, ideally under 3 sentences.
-              When answering, try to reference specific parts of the article content when relevant.
+              When answering, try to reference specific parts of the content when relevant.
               
               Title: ${article.title}
-              Content: ${article.content}
+              Full Content: ${article.content}
               
-              Current section being viewed: "${article.content.substring(0, 200)}..."`
+              If this is a research paper, you should focus on explaining complex concepts in simple terms and highlighting the key contributions and findings.`
             },
             {
               role: "user",

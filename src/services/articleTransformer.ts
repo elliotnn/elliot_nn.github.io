@@ -12,7 +12,7 @@ export const transformToArticle = async (page: WikipediaPage): Promise<Wikipedia
   }
   
   return {
-    id: page.pageid,
+    id: page.pageid.toString(), // Convert number to string to match the updated type
     title: page.title,
     content: page.extract || "No content available",
     image,
