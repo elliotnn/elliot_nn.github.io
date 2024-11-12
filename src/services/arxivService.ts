@@ -1,6 +1,6 @@
 import { WikipediaArticle } from './types';
 
-const ARXIV_API_URL = 'http://export.arxiv.org/api/query';
+const ARXIV_API_URL = 'https://export.arxiv.org/api/query';
 
 export const searchArxivPapers = async (query: string): Promise<WikipediaArticle[]> => {
   const searchQuery = `search_query=cat:cs.LG+OR+cat:cs.AI+AND+all:${query}&start=0&max_results=10`;
