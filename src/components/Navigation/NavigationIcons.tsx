@@ -1,6 +1,5 @@
 import { BookOpen, BookText, Compass } from "lucide-react";
 import { useLocation } from "react-router-dom";
-import { UserActions } from "./UserActions";
 
 interface NavigationIconsProps {
   searchType: "wiki" | "arxiv";
@@ -12,29 +11,29 @@ interface NavigationIconsProps {
 export const NavigationIcons = ({
   searchType,
   handleModeToggle,
-  handleAuthClick,
   handleDiscoverClick
 }: NavigationIconsProps) => {
   const location = useLocation();
 
   return (
     <div className="flex items-center gap-6">
-      <div className="relative flex gap-2">
-        <div className="absolute inset-0 bg-wikitok-red rounded-full scale-125" />
+      <div className="relative flex items-center gap-2 bg-wikitok-red/10 px-3 py-1.5 rounded-full">
         <BookOpen 
-          className={`w-6 h-6 cursor-pointer transition-colors relative z-10 text-white hover:text-wikitok-dark ${
-            searchType === "arxiv" ? "text-wikitok-dark" : "text-white"
+          className={`w-5 h-5 cursor-pointer transition-colors relative z-10 ${
+            searchType === "arxiv" ? "text-wikitok-red" : "text-white"
           }`}
           onClick={handleModeToggle}
         />
         <BookText 
-          className="w-6 h-6 cursor-pointer transition-colors relative z-10 text-white hover:text-wikitok-dark"
+          className={`w-5 h-5 cursor-pointer transition-colors relative z-10 ${
+            searchType === "wiki" ? "text-wikitok-red" : "text-white"
+          }`}
           onClick={handleModeToggle}
         />
       </div>
-      <UserActions handleAuthClick={handleAuthClick} />
+      
       <Compass 
-        className={`w-6 h-6 cursor-pointer transition-colors ${
+        className={`w-5 h-5 cursor-pointer transition-colors ${
           location.pathname === "/discover" ? "text-wikitok-red" : "text-white"
         }`}
         onClick={handleDiscoverClick}

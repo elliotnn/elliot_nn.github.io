@@ -5,8 +5,7 @@ import { NavigationLogo } from "./NavigationLogo";
 import { NavigationIcons } from "./NavigationIcons";
 import { SearchBar } from "./SearchBar";
 import { useToast } from "@/components/ui/use-toast";
-import { Button } from "@/components/ui/button";
-import { User } from "lucide-react";
+import { UserActions } from "./UserActions";
 
 const Navigation = () => {
   const [open, setOpen] = useState(false);
@@ -44,24 +43,15 @@ const Navigation = () => {
     navigate("/auth");
   };
 
-  const isDiscoverPage = location.pathname === "/discover";
-
   return (
     <nav 
-      className="fixed top-0 left-0 right-0 h-14 z-50 flex items-center justify-between px-4 bg-black"
+      className="fixed top-0 left-0 right-0 h-14 z-50 flex items-center justify-between px-4 bg-black/90 backdrop-blur-sm"
       role="navigation"
       aria-label="Main navigation"
     >
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-6">
         <NavigationLogo />
-        <Button
-          variant="ghost"
-          size="icon"
-          className="text-white hover:text-wikitok-red md:hidden"
-          onClick={handleAuthClick}
-        >
-          <User className="w-5 h-5" />
-        </Button>
+        <UserActions handleAuthClick={handleAuthClick} />
       </div>
       
       <SearchBar 
