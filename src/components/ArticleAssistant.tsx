@@ -15,7 +15,6 @@ const ArticleAssistant = ({ article }: { article: { title: string; content: stri
   const { messages, isLoading, askQuestion } = useChatAssistant(article);
   const { toast } = useToast();
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const hasInitializedRef = useRef(false);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -30,17 +29,6 @@ const ArticleAssistant = ({ article }: { article: { title: string; content: stri
       localStorage.setItem("openai_api_key", apiKey);
     }
   }, [apiKey]);
-
-  // Generate initial question when component mounts
-  useEffect(() => {
-    if (!hasInitializedRef.current && article && apiKey) {
-      hasInitializedRef.current = true;
-      const initialQuestion = article.title.includes("arXiv") 
-        ? "What are the key findings of this research paper?"
-        : "What is the most interesting aspect of this article?";
-      askQuestion(initialQuestion, apiKey);
-    }
-  }, [article, apiKey, askQuestion]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
