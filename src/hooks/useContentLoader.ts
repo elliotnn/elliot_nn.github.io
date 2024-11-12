@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { searchArxivPapers } from "../services/arxivService";
 import { getRandomArticles, getRelatedArticles } from "../services/wikipediaService";
 import { WikipediaArticle } from '../services/types';
@@ -6,6 +6,9 @@ import { WikipediaArticle } from '../services/types';
 export const useContentLoader = (currentArticle: WikipediaArticle | null) => {
   const [isLoading, setIsLoading] = useState(false);
   const [lastSearchQuery, setLastSearchQuery] = useState("");
+  const [previousMode, setPreviousMode] = useState<'wiki' | 'arxiv'>(
+    currentArticle?.title?.includes("arXiv") ? 'arxiv' : 'wiki'
+  );
 
   const loadMoreContent = useCallback(async () => {
     if (isLoading) return;
@@ -15,20 +18,18 @@ export const useContentLoader = (currentArticle: WikipediaArticle | null) => {
       let newContent;
       
       const isCurrentArxiv = currentArticle?.title?.includes("arXiv");
+      const modeChanged = isCurrentArxiv !== (previousMode === 'arxiv');
+      setPreviousMode(isCurrentArxiv ? 'arxiv' : 'wiki');
       
       if (currentArticle) {
         if (isCurrentArxiv) {
           const tags = currentArticle.tags || [];
           let searchQuery = "";
           
-          if (tags.length > 0) {
-            // Generate a different search query than the last one
+          if (tags.length > 0 && !modeChanged) {
             const availableTags = tags.filter(tag => !lastSearchQuery.includes(tag));
             if (availableTags.length > 0) {
               searchQuery = availableTags[Math.floor(Math.random() * availableTags.length)];
-            } else {
-              // If we've used all tags, get random papers
-              searchQuery = "";
             }
           }
           
@@ -39,9 +40,13 @@ export const useContentLoader = (currentArticle: WikipediaArticle | null) => {
             newContent = await searchArxivPapers("");
           }
         } else {
-          newContent = await getRelatedArticles(currentArticle);
-          if (!newContent || newContent.length === 0) {
+          if (modeChanged) {
             newContent = await getRandomArticles(3);
+          } else {
+            newContent = await getRelatedArticles(currentArticle);
+            if (!newContent || newContent.length === 0) {
+              newContent = await getRandomArticles(3);
+            }
           }
         }
       } else {
@@ -58,7 +63,17 @@ export const useContentLoader = (currentArticle: WikipediaArticle | null) => {
     } finally {
       setIsLoading(false);
     }
-  }, [isLoading, currentArticle, lastSearchQuery]);
+  }, [isLoading, currentArticle, lastSearchQuery, previousMode]);
+
+  // Trigger content reload when mode changes
+  useEffect(() => {
+    const isCurrentArxiv = currentArticle?.title?.includes("arXiv");
+    const modeChanged = isCurrentArxiv !== (previousMode === 'arxiv');
+    
+    if (modeChanged) {
+      loadMoreContent();
+    }
+  }, [currentArticle, previousMode, loadMoreContent]);
 
   return { loadMoreContent, isLoading };
 };
