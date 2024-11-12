@@ -15,6 +15,7 @@ const ArticleAssistant = ({ article }: { article: { title: string; content: stri
   const { messages, isLoading, askQuestion, generateInitialQuestion } = useChatAssistant(article);
   const { toast } = useToast();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -36,8 +37,8 @@ const ArticleAssistant = ({ article }: { article: { title: string; content: stri
     }
   }, [article, apiKey]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     if (!article || !question.trim() || !apiKey.trim()) {
       toast({
         title: "Error",
@@ -49,6 +50,13 @@ const ArticleAssistant = ({ article }: { article: { title: string; content: stri
 
     await askQuestion(question, apiKey);
     setQuestion("");
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit();
+    }
   };
 
   if (!article) return null;
@@ -65,13 +73,15 @@ const ArticleAssistant = ({ article }: { article: { title: string; content: stri
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="mt-auto border-t border-border bg-wikitok-dark p-4">
+      <form onSubmit={handleSubmit} className="mt-auto border-t border-border bg-wikitok-dark p-4">
         <div className="flex items-center gap-2">
           <Input
+            ref={inputRef}
             type="text"
             placeholder="Ask a question..."
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
+            onKeyPress={handleKeyPress}
             disabled={isLoading}
             className="flex-1"
           />
@@ -98,12 +108,11 @@ const ArticleAssistant = ({ article }: { article: { title: string; content: stri
             type="submit" 
             disabled={isLoading || !question.trim() || !apiKey.trim()}
             size="icon"
-            onClick={handleSubmit}
           >
             <Send className="w-4 h-4" />
           </Button>
         </div>
-      </div>
+      </form>
     </div>
   );
 };
