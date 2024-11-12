@@ -62,8 +62,8 @@ const Navigation = () => {
       <NavigationIcons 
         searchType={searchType}
         handleModeToggle={handleModeToggle}
-        handleAuthClick={handleAuthClick}
         handleDiscoverClick={handleDiscoverClick}
+        location={location}
       />
 
       <SearchDialog 
