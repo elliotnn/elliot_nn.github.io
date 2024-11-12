@@ -8,13 +8,18 @@ export const Message = ({ role, content }: { role: 'user' | 'assistant', content
   const messageRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
-    if (messageRef.current) {
-      messageRef.current.scrollIntoView({ 
-        behavior: "smooth",
-        block: "end"
-      });
+    // Only scroll for assistant messages and after a small delay to ensure all words are rendered
+    if (role === 'assistant') {
+      const timer = setTimeout(() => {
+        messageRef.current?.scrollIntoView({ 
+          behavior: "smooth",
+          block: "end"
+        });
+      }, words.length * 100 + 100); // Add extra 100ms buffer
+
+      return () => clearTimeout(timer);
     }
-  }, [words]);
+  }, [content, role, words.length]);
   
   return (
     <motion.div 
