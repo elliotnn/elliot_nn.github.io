@@ -17,7 +17,7 @@ export const NavigationIcons = ({
   const location = useLocation();
 
   return (
-    <div className="flex space-x-6">
+    <div className="flex items-center space-x-6">
       <BookOpen 
         className={`w-5 h-5 cursor-pointer transition-colors ${
           searchType === "arxiv" ? "text-wikitok-red" : "text-white"
@@ -25,7 +25,7 @@ export const NavigationIcons = ({
         onClick={handleModeToggle}
       />
       <User
-        className="w-5 h-5 cursor-pointer text-white hover:text-wikitok-red transition-colors"
+        className="w-6 h-6 cursor-pointer text-white hover:text-wikitok-red transition-colors"
         onClick={handleAuthClick}
       />
       <Compass 
