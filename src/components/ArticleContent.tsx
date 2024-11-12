@@ -43,7 +43,7 @@ export const ArticleContent = ({
         transition={{ duration: 0.5 }}
         className="absolute bottom-0 left-0 right-0 flex flex-col"
       >
-        <div className="px-8 pt-6 pb-4 z-20">
+        <div className="px-8 pt-6 pb-4 z-20 backdrop-blur-md bg-black/30">
           <h1 className="text-4xl font-bold mb-2">{article.title}</h1>
           {article.title.includes("arXiv") && (
             <span className="bg-wikitok-red text-white px-2 py-1 rounded-full text-sm">
@@ -54,7 +54,7 @@ export const ArticleContent = ({
 
         <div 
           ref={textContainerRef}
-          className="max-h-[50vh] overflow-y-auto px-8 pb-8 flex flex-col-reverse"
+          className="max-h-[50vh] overflow-y-auto px-8 pb-8 flex flex-col-reverse backdrop-blur-md bg-black/30"
         >
           <div>
             <p className="text-lg leading-loose mb-6 py-2">
