@@ -24,9 +24,10 @@ export const searchArxivPapers = async (query: string): Promise<WikipediaArticle
   }
   lastRequestTime = Date.now();
 
-  // Construct the search query
-  const searchQuery = encodeURIComponent(`(cat:cs.LG OR cat:cs.AI) AND all:${query}`);
-  const url = `${ARXIV_API_URL}?search_query=${searchQuery}&start=0&max_results=10&sortBy=submittedDate&sortOrder=descending`;
+  // Construct a more comprehensive search query
+  const searchTerms = query.split(' ').map(term => `all:"${term}"`).join(' AND ');
+  const searchQuery = encodeURIComponent(`(cat:cs.LG OR cat:cs.AI OR cat:cs.CL) AND (${searchTerms})`);
+  const url = `${ARXIV_API_URL}?search_query=${searchQuery}&start=0&max_results=20&sortBy=relevance&sortOrder=descending`;
   
   try {
     const response = await fetch(url);
@@ -49,6 +50,9 @@ export const searchArxivPapers = async (query: string): Promise<WikipediaArticle
         .map(author => author.getElementsByTagName("name")[0]?.textContent || "")
         .join(", ");
       const id = entry.getElementsByTagName("id")[0]?.textContent || `arxiv-${Date.now()}-${Math.random()}`;
+      const categories = Array.from(entry.getElementsByTagName("category"))
+        .map(cat => cat.getAttribute("term") || "")
+        .filter(Boolean);
       
       return {
         id,
@@ -58,7 +62,7 @@ export const searchArxivPapers = async (query: string): Promise<WikipediaArticle
         citations: Math.floor(Math.random() * 100),
         readTime: Math.ceil(summary.length / 1000),
         views: Math.floor(Math.random() * 10000),
-        tags: ["machine-learning", "artificial-intelligence"],
+        tags: categories,
         relatedArticles: [],
       };
     });
