@@ -3,10 +3,17 @@ import { WikipediaArticle } from './types';
 const ARXIV_API_URL = 'https://export.arxiv.org/api/query';
 
 export const searchArxivPapers = async (query: string): Promise<WikipediaArticle[]> => {
-  const searchQuery = `search_query=cat:cs.LG+OR+cat:cs.AI+AND+all:${query}&start=0&max_results=10`;
+  // Encode the query parameters properly
+  const searchQuery = encodeURIComponent(`(cat:cs.LG OR cat:cs.AI) AND all:${query}`);
+  const url = `${ARXIV_API_URL}?search_query=${searchQuery}&start=0&max_results=10&sortBy=submittedDate&sortOrder=descending`;
   
   try {
-    const response = await fetch(`${ARXIV_API_URL}?${searchQuery}`);
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+      throw new Error(`ArXiv API error: ${response.status}`);
+    }
+    
     const data = await response.text();
     
     // Parse XML response
@@ -22,8 +29,8 @@ export const searchArxivPapers = async (query: string): Promise<WikipediaArticle
         .join(", ");
       
       return {
-        id: Date.now() + Math.random(),
-        title: title,
+        id: entry.getElementsByTagName("id")[0]?.textContent || `${Date.now()}-${Math.random()}`,
+        title: title.replace(/\n/g, ' '),
         content: `${summary}\n\nAuthors: ${authors}`,
         image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/ArXiv_web.svg/1200px-ArXiv_web.svg.png",
         citations: Math.floor(Math.random() * 100),
