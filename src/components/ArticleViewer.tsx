@@ -14,20 +14,24 @@ const ArticleViewer = ({ articles: initialArticles, onArticleChange }) => {
   
   const { loadMoreContent, isLoading } = useContentLoader(currentArticle);
 
+  // Load more content when approaching the end
+  useEffect(() => {
+    if (currentIndex >= articles.length - 2) {
+      loadMoreContent().then(newContent => {
+        if (newContent && newContent.length > 0) {
+          setArticles(prev => [...prev, ...newContent]);
+        }
+      });
+    }
+  }, [currentIndex, loadMoreContent]);
+
+  // Handle text display animation
   useEffect(() => {
     setIsVisible(true);
     setDisplayedText("");
     setProgress(0);
     onArticleChange(currentArticle);
-
-    if (currentIndex >= articles.length - 2) {
-      loadMoreContent().then(newContent => {
-        if (newContent) {
-          setArticles(prev => [...prev, ...newContent]);
-        }
-      });
-    }
-  }, [currentIndex, currentArticle, onArticleChange, articles.length, loadMoreContent]);
+  }, [currentIndex, currentArticle, onArticleChange]);
 
   useEffect(() => {
     if (!isVisible || !currentArticle?.content) return;
@@ -53,6 +57,7 @@ const ArticleViewer = ({ articles: initialArticles, onArticleChange }) => {
     return () => clearInterval(interval);
   }, [isVisible, currentArticle?.content]);
 
+  // Intersection Observer setup
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -88,7 +93,7 @@ const ArticleViewer = ({ articles: initialArticles, onArticleChange }) => {
     >
       {articles.map((article, index) => (
         <ArticleContent
-          key={article.id}
+          key={`${article.id}-${index}`}
           article={article}
           isVisible={isVisible}
           currentIndex={currentIndex}
