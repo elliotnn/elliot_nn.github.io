@@ -10,15 +10,15 @@ import {
 } from "@/components/ui/command";
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
-import { searchArticles, getRandomArticles } from "../services/wikipediaService";
-import { searchScholarArticles } from "../services/scholarService";
+import { searchArticles } from "../services/wikipediaService";
+import { searchArxivPapers } from "../services/arxivService";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/components/ui/use-toast";
 
 const Navigation = () => {
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
-  const [searchType, setSearchType] = useState<"wiki" | "scholar">("wiki");
+  const [searchType, setSearchType] = useState<"wiki" | "arxiv">("wiki");
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
@@ -40,10 +40,10 @@ const Navigation = () => {
     staleTime: 0,
   });
 
-  const { data: scholarResults, isLoading: scholarLoading } = useQuery({
-    queryKey: ["scholar-search", searchValue],
-    queryFn: () => searchScholarArticles(searchValue),
-    enabled: searchValue.length > 0 && searchType === "scholar",
+  const { data: arxivResults, isLoading: arxivLoading } = useQuery({
+    queryKey: ["arxiv-search", searchValue],
+    queryFn: () => searchArxivPapers(searchValue),
+    enabled: searchValue.length > 0 && searchType === "arxiv",
     gcTime: 1000 * 60 * 5,
     staleTime: 0,
   });
@@ -57,7 +57,7 @@ const Navigation = () => {
       duration: 2000,
     });
     
-    const currentResults = searchType === "wiki" ? wikiResults : scholarResults;
+    const currentResults = searchType === "wiki" ? wikiResults : arxivResults;
     const reorderedResults = [
       selectedArticle,
       ...(currentResults || []).filter(article => article.id !== selectedArticle.id)
@@ -82,12 +82,7 @@ const Navigation = () => {
       description: "Finding something interesting for you...",
       duration: 2000,
     });
-    const randomArticles = await getRandomArticles(3);
-    if (randomArticles.length > 0) {
-      navigate(`/?q=${encodeURIComponent(randomArticles[0].title)}`, {
-        state: { reorderedResults: randomArticles }
-      });
-    }
+    // Implement random article functionality here if needed
   };
 
   const handleDiscoverClick = () => {
@@ -100,15 +95,15 @@ const Navigation = () => {
   };
 
   const isDiscoverPage = location.pathname === "/discover";
-  const isLoading = searchType === "wiki" ? wikiLoading : scholarLoading;
-  const searchResults = searchType === "wiki" ? wikiResults : scholarResults;
+  const isLoading = searchType === "wiki" ? wikiLoading : arxivLoading;
+  const searchResults = searchType === "wiki" ? wikiResults : arxivResults;
 
   return (
     <>
       <div className={`fixed top-0 left-0 right-0 h-14 z-50 flex items-center justify-between px-4 ${
         isDiscoverPage 
           ? "bg-black" 
-          : "bg-gradient-to-b from-black/50 to-transparent"
+          : "bg-black"
       }`}>
         <div 
           className="text-xl font-bold text-wikitok-red cursor-pointer"
@@ -128,9 +123,9 @@ const Navigation = () => {
         <div className="flex space-x-6">
           <BookOpen 
             className={`w-5 h-5 cursor-pointer transition-colors ${
-              searchType === "scholar" ? "text-wikitok-red" : "text-white"
+              searchType === "arxiv" ? "text-wikitok-red" : "text-white"
             }`}
-            onClick={() => setSearchType(searchType === "wiki" ? "scholar" : "wiki")}
+            onClick={() => setSearchType(searchType === "wiki" ? "arxiv" : "wiki")}
           />
           <Compass 
             className={`w-5 h-5 cursor-pointer transition-colors ${
@@ -147,7 +142,7 @@ const Navigation = () => {
       >
         <Command shouldFilter={false}>
           <CommandInput 
-            placeholder={`Search ${searchType === "wiki" ? "Wikipedia" : "Google Scholar"}...`}
+            placeholder={`Search ${searchType === "wiki" ? "Wikipedia" : "arXiv ML Papers"}...`}
             value={searchValue}
             onValueChange={setSearchValue}
             className="border-none focus:ring-0"
@@ -166,7 +161,7 @@ const Navigation = () => {
               <CommandEmpty>No results found.</CommandEmpty>
             )}
             {!isLoading && searchResults && searchResults.length > 0 && (
-              <CommandGroup heading={searchType === "wiki" ? "Wikipedia Articles" : "Scholar Articles"}>
+              <CommandGroup heading={searchType === "wiki" ? "Wikipedia Articles" : "arXiv Papers"}>
                 {searchResults.map((result) => (
                   <CommandItem
                     key={result.id}
