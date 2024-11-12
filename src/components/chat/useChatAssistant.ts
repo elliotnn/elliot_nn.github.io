@@ -22,18 +22,22 @@ export const useChatAssistant = (article: { title: string; content: string } | n
           messages: [
             {
               role: "system",
-              content: `You are a friendly AI assistant tasked with helping beginners understand the following ${article.title.includes("arXiv") ? "research paper" : "article"}. 
-              Generate ONE engaging question that assumes no prior knowledge of the topic.
-              The question should help someone who is completely new to this subject understand a key concept.
-              Make the question very approachable and avoid technical jargon.
-              If this is a research paper, focus on the real-world implications or basic concepts rather than technical details.
+              content: `You are a friendly AI assistant starting a conversation about the following ${article.title.includes("arXiv") ? "research paper" : "article"}. 
+              Ask ONE engaging, thought-provoking question that would make someone curious about this topic.
+              The question should:
+              - Be very conversational and friendly in tone
+              - Assume no prior knowledge of the subject
+              - Connect the topic to everyday experiences or common interests
+              - Encourage the reader to share their thoughts or experiences
+              - Avoid technical jargon completely
+              If this is a research paper, focus on its real-world impact or relatable aspects rather than technical details.
               
               Title: ${article.title}
               Full Content: ${article.content}`
             },
             {
               role: "user",
-              content: "Generate a beginner-friendly question about this content."
+              content: "Start a friendly conversation about this topic with an engaging question."
             }
           ]
         }),
