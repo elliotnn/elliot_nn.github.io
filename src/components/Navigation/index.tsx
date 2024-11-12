@@ -1,16 +1,10 @@
-import { BookOpen, Compass, LogOut } from "lucide-react";
+import { BookOpen, Compass } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { SearchDialog } from "./SearchDialog";
 import { useToast } from "@/components/ui/use-toast";
-import { Session } from "@supabase/supabase-js";
-import { supabase } from "@/integrations/supabase/client";
 
-interface NavigationProps {
-  session: Session;
-}
-
-const Navigation = ({ session }: NavigationProps) => {
+const Navigation = () => {
   const [searchValue, setSearchValue] = useState("");
   const [searchType, setSearchType] = useState<"wiki" | "arxiv">("wiki");
   const navigate = useNavigate();
@@ -50,11 +44,6 @@ const Navigation = ({ session }: NavigationProps) => {
     navigate("/", { state: { mode: newMode, forceReload: true } });
   };
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate("/auth");
-  };
-
   const isDiscoverPage = location.pathname === "/discover";
 
   return (
@@ -86,10 +75,6 @@ const Navigation = ({ session }: NavigationProps) => {
             location.pathname === "/discover" ? "text-wikitok-red" : "text-white"
           }`}
           onClick={handleDiscoverClick}
-        />
-        <LogOut
-          className="w-5 h-5 cursor-pointer text-white hover:text-wikitok-red transition-colors"
-          onClick={handleLogout}
         />
       </div>
     </div>
