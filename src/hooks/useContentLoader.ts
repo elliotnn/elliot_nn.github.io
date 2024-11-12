@@ -5,6 +5,7 @@ import { WikipediaArticle } from '../services/types';
 
 export const useContentLoader = (currentArticle: WikipediaArticle | null) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [lastSearchQuery, setLastSearchQuery] = useState("");
 
   const loadMoreContent = useCallback(async () => {
     if (isLoading) return;
@@ -18,13 +19,23 @@ export const useContentLoader = (currentArticle: WikipediaArticle | null) => {
       if (currentArticle) {
         if (isCurrentArxiv) {
           const tags = currentArticle.tags || [];
+          let searchQuery = "";
+          
           if (tags.length > 0) {
-            const searchQuery = tags.join(" OR ");
-            newContent = await searchArxivPapers(searchQuery);
-            if (!newContent || newContent.length === 0) {
-              newContent = await searchArxivPapers("");
+            // Generate a different search query than the last one
+            const availableTags = tags.filter(tag => !lastSearchQuery.includes(tag));
+            if (availableTags.length > 0) {
+              searchQuery = availableTags[Math.floor(Math.random() * availableTags.length)];
+            } else {
+              // If we've used all tags, get random papers
+              searchQuery = "";
             }
-          } else {
+          }
+          
+          setLastSearchQuery(searchQuery);
+          newContent = await searchArxivPapers(searchQuery);
+          
+          if (!newContent || newContent.length === 0) {
             newContent = await searchArxivPapers("");
           }
         } else {
@@ -47,7 +58,7 @@ export const useContentLoader = (currentArticle: WikipediaArticle | null) => {
     } finally {
       setIsLoading(false);
     }
-  }, [isLoading, currentArticle]);
+  }, [isLoading, currentArticle, lastSearchQuery]);
 
   return { loadMoreContent, isLoading };
 };
