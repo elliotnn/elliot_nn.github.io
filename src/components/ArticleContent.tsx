@@ -61,7 +61,7 @@ export const ArticleContent = ({
         >
           <div className="relative">
             <span className="absolute inset-0 backdrop-blur-md bg-black/30 -z-10" />
-            <p className="text-lg leading-loose mb-6 py-2 relative">
+            <p className="text-lg leading-loose mb-6 py-2 relative backdrop-blur-md bg-black/30 rounded-lg px-4">
               {currentIndex === index ? displayedText : article.content}
             </p>
             <div className="flex items-center space-x-2 text-sm text-gray-300 mt-4">
