@@ -1,4 +1,4 @@
-import { BookOpen, Compass, LogIn } from "lucide-react";
+import { BookOpen, Compass, User } from "lucide-react";
 import { useLocation } from "react-router-dom";
 
 interface NavigationIconsProps {
@@ -24,7 +24,7 @@ export const NavigationIcons = ({
         }`}
         onClick={handleModeToggle}
       />
-      <LogIn
+      <User
         className="w-5 h-5 cursor-pointer text-white hover:text-wikitok-red transition-colors"
         onClick={handleAuthClick}
       />
