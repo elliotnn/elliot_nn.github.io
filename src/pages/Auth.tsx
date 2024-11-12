@@ -30,8 +30,17 @@ const AuthPage = () => {
                 colors: {
                   brand: '#ef4444',
                   brandAccent: '#dc2626',
+                  inputText: 'white',
+                  inputBackground: 'black',
+                  inputBorder: 'gray',
+                  inputLabelText: 'white',
+                  inputPlaceholder: 'darkgray',
                 }
               }
+            },
+            className: {
+              input: 'text-white bg-black border-gray-600',
+              label: 'text-white',
             }
           }}
           providers={[]}
