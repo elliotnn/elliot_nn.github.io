@@ -3,9 +3,11 @@ import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { SearchDialog } from "./SearchDialog";
 import { NavigationLogo } from "./NavigationLogo";
 import { NavigationIcons } from "./NavigationIcons";
+import { SearchBar } from "./SearchBar";
 import { useToast } from "@/components/ui/use-toast";
 
 const Navigation = () => {
+  const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [searchType, setSearchType] = useState<"wiki" | "arxiv">("wiki");
   const navigate = useNavigate();
@@ -48,10 +50,9 @@ const Navigation = () => {
     }`}>
       <NavigationLogo />
       
-      <SearchDialog 
+      <SearchBar 
         searchValue={searchValue}
-        setSearchValue={setSearchValue}
-        searchType={searchType}
+        onSearchClick={() => setOpen(true)}
       />
       
       <NavigationIcons 
@@ -59,6 +60,14 @@ const Navigation = () => {
         handleModeToggle={handleModeToggle}
         handleAuthClick={handleAuthClick}
         handleDiscoverClick={handleDiscoverClick}
+      />
+
+      <SearchDialog 
+        open={open}
+        onOpenChange={setOpen}
+        searchValue={searchValue}
+        setSearchValue={setSearchValue}
+        searchType={searchType}
       />
     </div>
   );
