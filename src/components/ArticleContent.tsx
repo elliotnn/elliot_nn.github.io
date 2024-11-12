@@ -45,8 +45,7 @@ export const ArticleContent = ({
       >
         <div className="px-8 pt-6 pb-4 z-20">
           <span className="relative">
-            <span className="absolute inset-0 backdrop-blur-md bg-black/30 -z-10" />
-            <h1 className="text-4xl font-bold mb-2">{article.title}</h1>
+            <h1 className="text-4xl font-bold mb-2 backdrop-blur-md bg-black/30 rounded-lg px-4 py-2">{article.title}</h1>
             {article.title.includes("arXiv") && (
               <span className="bg-wikitok-red text-white px-2 py-1 rounded-full text-sm">
                 Research Paper
@@ -60,7 +59,6 @@ export const ArticleContent = ({
           className="max-h-[50vh] overflow-y-auto px-8 pb-8 flex flex-col-reverse"
         >
           <div className="relative">
-            <span className="absolute inset-0 backdrop-blur-md bg-black/30 -z-10" />
             <p className="text-lg leading-loose mb-6 py-2 relative backdrop-blur-md bg-black/30 rounded-lg px-4">
               {currentIndex === index ? displayedText : article.content}
             </p>
