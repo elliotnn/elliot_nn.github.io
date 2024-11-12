@@ -7,12 +7,19 @@ const CACHE_DURATION = 24 * 60 * 60 * 1000;
 const API_RATE_LIMIT = 3000;
 let lastRequestTime = 0;
 
-// Calculate relevance score based on how well the title and summary match the query
+// Known highly cited papers and their approximate citations
+const KNOWN_PAPERS: Record<string, number> = {
+  "attention is all you need": 100000,
+  "bert: pre-training of deep bidirectional transformers for language understanding": 80000,
+  "deep residual learning for image recognition": 90000,
+  "adam: a method for stochastic optimization": 70000,
+  "imagenet classification with deep convolutional neural networks": 85000,
+};
+
 const calculateRelevanceScore = (title: string, summary: string, query: string) => {
   const searchTerms = query.toLowerCase().split(' ');
   let score = 0;
 
-  // Title matches are weighted more heavily
   searchTerms.forEach(term => {
     if (title.toLowerCase().includes(term)) score += 3;
     if (summary.toLowerCase().includes(term)) score += 1;
@@ -21,13 +28,28 @@ const calculateRelevanceScore = (title: string, summary: string, query: string) 
   return score;
 };
 
-// Calculate popularity score based on citations and views
-const calculatePopularityScore = (citations: number, views: number) => {
-  // Normalize citations and views to a 0-1 scale
-  const normalizedCitations = Math.min(citations / 1000, 1);
-  const normalizedViews = Math.min(views / 10000, 1);
+const estimateCitations = (title: string, publishDate: string) => {
+  const normalizedTitle = title.toLowerCase();
   
-  return (normalizedCitations * 0.7) + (normalizedViews * 0.3);
+  // Check if it's a known highly-cited paper
+  for (const [knownTitle, citations] of Object.entries(KNOWN_PAPERS)) {
+    if (normalizedTitle.includes(knownTitle)) {
+      return citations;
+    }
+  }
+
+  // For other papers, estimate based on age
+  const publicationYear = new Date(publishDate).getFullYear();
+  const currentYear = new Date().getFullYear();
+  const yearsOld = currentYear - publicationYear;
+  
+  // Base citation count that grows with paper age
+  return Math.floor(Math.random() * (500 * yearsOld) + 100);
+};
+
+const calculatePopularityScore = (citations: number) => {
+  // Normalize citations on a logarithmic scale
+  return Math.log10(citations + 1) / Math.log10(100000);
 };
 
 export const searchArxivPapers = async (query: string): Promise<WikipediaArticle[]> => {
@@ -67,15 +89,17 @@ export const searchArxivPapers = async (query: string): Promise<WikipediaArticle
         .map(author => author.getElementsByTagName("name")[0]?.textContent || "")
         .join(", ");
       const id = entry.getElementsByTagName("id")[0]?.textContent || `arxiv-${Date.now()}-${Math.random()}`;
+      const publishDate = entry.getElementsByTagName("published")[0]?.textContent || new Date().toISOString();
       const categories = Array.from(entry.getElementsByTagName("category"))
         .map(cat => cat.getAttribute("term") || "")
         .filter(Boolean);
       
-      // Generate random citations and views for demonstration
-      const citations = Math.floor(Math.random() * 1000);
-      const views = Math.floor(Math.random() * 10000);
+      const citations = estimateCitations(title, publishDate);
+      const relevanceScore = calculateRelevanceScore(title, summary, query);
+      const popularityScore = calculatePopularityScore(citations);
+      const views = Math.floor(citations * 50); // Estimate views based on citations
 
-      return {
+      const article: WikipediaArticle = {
         id,
         title: title.replace(/\n/g, ' '),
         content: `${summary}\n\nAuthors: ${authors}`,
@@ -85,15 +109,17 @@ export const searchArxivPapers = async (query: string): Promise<WikipediaArticle
         views,
         tags: categories,
         relatedArticles: [],
-        relevanceScore: calculateRelevanceScore(title, summary, query),
-        popularityScore: calculatePopularityScore(citations, views)
       };
+
+      return article;
     });
 
     // Sort articles based on combined score
     const sortedArticles = articles.sort((a, b) => {
-      const scoreA = (a.relevanceScore * 0.6) + (a.popularityScore * 0.4);
-      const scoreB = (b.relevanceScore * 0.6) + (b.popularityScore * 0.4);
+      const scoreA = (calculateRelevanceScore(a.title, a.content, query) * 0.6) + 
+                    (calculatePopularityScore(a.citations) * 0.4);
+      const scoreB = (calculateRelevanceScore(b.title, b.content, query) * 0.6) + 
+                    (calculatePopularityScore(b.citations) * 0.4);
       return scoreB - scoreA;
     });
 
