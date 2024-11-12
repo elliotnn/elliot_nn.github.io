@@ -1,4 +1,4 @@
-import { Share2, ThumbsUp, MessageSquare, MessageCircle, X } from "lucide-react";
+import { Share2, ThumbsUp, MessageSquare, MessageCircle, X, UserPlus } from "lucide-react";
 import { Button } from "./ui/button";
 import ArticleAssistant from "./ArticleAssistant";
 import { useState } from "react";
@@ -40,6 +40,13 @@ const RightSidebar = ({ article }) => {
   const SidebarContent = () => (
     <div className="h-full flex flex-col justify-center pt-32">
       <div className="flex flex-col space-y-2">
+        <Button 
+          variant="ghost" 
+          className="w-12 h-12 p-0 justify-center hover:text-wikitok-blue"
+          onClick={() => navigate('/auth')}
+        >
+          <UserPlus className="w-4 h-4" />
+        </Button>
         <Button 
           variant="ghost" 
           className="w-12 h-12 p-0 justify-center hover:text-wikitok-blue"
