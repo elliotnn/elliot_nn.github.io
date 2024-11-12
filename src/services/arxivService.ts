@@ -2,21 +2,41 @@ import { WikipediaArticle } from './types';
 
 const ARXIV_API_URL = 'https://export.arxiv.org/api/query';
 
-// Cache for storing API responses
 const cache = new Map<string, { data: WikipediaArticle[], timestamp: number }>();
-const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-const API_RATE_LIMIT = 3000; // 3 seconds between requests
+const CACHE_DURATION = 24 * 60 * 60 * 1000;
+const API_RATE_LIMIT = 3000;
 let lastRequestTime = 0;
 
+// Calculate relevance score based on how well the title and summary match the query
+const calculateRelevanceScore = (title: string, summary: string, query: string) => {
+  const searchTerms = query.toLowerCase().split(' ');
+  let score = 0;
+
+  // Title matches are weighted more heavily
+  searchTerms.forEach(term => {
+    if (title.toLowerCase().includes(term)) score += 3;
+    if (summary.toLowerCase().includes(term)) score += 1;
+  });
+
+  return score;
+};
+
+// Calculate popularity score based on citations and views
+const calculatePopularityScore = (citations: number, views: number) => {
+  // Normalize citations and views to a 0-1 scale
+  const normalizedCitations = Math.min(citations / 1000, 1);
+  const normalizedViews = Math.min(views / 10000, 1);
+  
+  return (normalizedCitations * 0.7) + (normalizedViews * 0.3);
+};
+
 export const searchArxivPapers = async (query: string): Promise<WikipediaArticle[]> => {
-  // Check cache first
   const cacheKey = query.toLowerCase();
   const cachedData = cache.get(cacheKey);
   if (cachedData && Date.now() - cachedData.timestamp < CACHE_DURATION) {
     return cachedData.data;
   }
 
-  // Respect rate limiting
   const now = Date.now();
   const timeToWait = Math.max(0, API_RATE_LIMIT - (now - lastRequestTime));
   if (timeToWait > 0) {
@@ -24,7 +44,6 @@ export const searchArxivPapers = async (query: string): Promise<WikipediaArticle
   }
   lastRequestTime = Date.now();
 
-  // Construct a more comprehensive search query
   const searchTerms = query.split(' ').map(term => `all:"${term}"`).join(' AND ');
   const searchQuery = encodeURIComponent(`(cat:cs.LG OR cat:cs.AI OR cat:cs.CL) AND (${searchTerms})`);
   const url = `${ARXIV_API_URL}?search_query=${searchQuery}&start=0&max_results=20&sortBy=relevance&sortOrder=descending`;
@@ -37,8 +56,6 @@ export const searchArxivPapers = async (query: string): Promise<WikipediaArticle
     }
     
     const data = await response.text();
-    
-    // Parse XML response
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(data, "text/xml");
     const entries = xmlDoc.getElementsByTagName("entry");
@@ -54,23 +71,34 @@ export const searchArxivPapers = async (query: string): Promise<WikipediaArticle
         .map(cat => cat.getAttribute("term") || "")
         .filter(Boolean);
       
+      // Generate random citations and views for demonstration
+      const citations = Math.floor(Math.random() * 1000);
+      const views = Math.floor(Math.random() * 10000);
+
       return {
         id,
         title: title.replace(/\n/g, ' '),
         content: `${summary}\n\nAuthors: ${authors}`,
         image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/ArXiv_web.svg/1200px-ArXiv_web.svg.png",
-        citations: Math.floor(Math.random() * 100),
+        citations,
         readTime: Math.ceil(summary.length / 1000),
-        views: Math.floor(Math.random() * 10000),
+        views,
         tags: categories,
         relatedArticles: [],
+        relevanceScore: calculateRelevanceScore(title, summary, query),
+        popularityScore: calculatePopularityScore(citations, views)
       };
     });
 
-    // Cache the results
-    cache.set(cacheKey, { data: articles, timestamp: Date.now() });
-    
-    return articles;
+    // Sort articles based on combined score
+    const sortedArticles = articles.sort((a, b) => {
+      const scoreA = (a.relevanceScore * 0.6) + (a.popularityScore * 0.4);
+      const scoreB = (b.relevanceScore * 0.6) + (b.popularityScore * 0.4);
+      return scoreB - scoreA;
+    });
+
+    cache.set(cacheKey, { data: sortedArticles, timestamp: Date.now() });
+    return sortedArticles;
   } catch (error) {
     console.error('Error fetching arXiv papers:', error);
     return [];
