@@ -3,11 +3,13 @@ import { Button } from "./ui/button";
 import ArticleAssistant from "./ArticleAssistant";
 import { useState } from "react";
 import { useToast } from "./ui/use-toast";
+import { useNavigate } from "react-router-dom";
 
 const RightSidebar = ({ article }) => {
   const [showChat, setShowChat] = useState(false);
   const [liked, setLiked] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleLike = () => {
     setLiked(!liked);
