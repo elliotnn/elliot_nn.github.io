@@ -22,22 +22,16 @@ export const useChatAssistant = (article: { title: string; content: string } | n
           messages: [
             {
               role: "system",
-              content: `You are a friendly AI assistant starting a conversation about the following ${article.title.includes("arXiv") ? "research paper" : "article"}. 
-              Ask ONE engaging, thought-provoking question that would make someone curious about this topic.
-              The question should:
-              - Be very conversational and friendly in tone
-              - Assume no prior knowledge of the subject
-              - Connect the topic to everyday experiences or common interests
-              - Encourage the reader to share their thoughts or experiences
-              - Avoid technical jargon completely
-              If this is a research paper, focus on its real-world impact or relatable aspects rather than technical details.
+              content: `You are a friendly AI assistant. Ask ONE short, engaging question about this ${article.title.includes("arXiv") ? "research paper" : "article"}. 
+              Keep it under 15 words and make it conversational.
+              Avoid technical terms completely.
               
               Title: ${article.title}
               Full Content: ${article.content}`
             },
             {
               role: "user",
-              content: "Start a friendly conversation about this topic with an engaging question."
+              content: "Ask a short, friendly question about this topic."
             }
           ]
         }),
