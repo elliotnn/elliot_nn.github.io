@@ -133,7 +133,7 @@ const ArticleViewer = ({ articles: initialArticles, onArticleChange }) => {
               className="max-h-[50vh] overflow-y-auto px-8 pb-8 flex flex-col-reverse"
             >
               <div>
-                <p className="text-lg leading-relaxed mb-4">
+                <p className="text-lg leading-loose mb-6 py-2">
                   {currentIndex === index ? displayedText : article.content}
                 </p>
                 <div className="flex items-center space-x-2 text-sm text-gray-300 mt-4">
