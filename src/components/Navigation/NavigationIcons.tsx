@@ -1,5 +1,6 @@
 import { BookOpen, Compass, BookText } from "lucide-react";
 import { CreateAccountButton } from "./CreateAccountButton";
+import { useNavigate } from "react-router-dom";
 
 interface NavigationIconsProps {
   searchType: "wiki" | "arxiv";
@@ -14,6 +15,12 @@ export const NavigationIcons = ({
   handleDiscoverClick,
   location,
 }: NavigationIconsProps) => {
+  const navigate = useNavigate();
+
+  const handleCompassClick = () => {
+    navigate('/discover');
+  };
+
   return (
     <div className="flex items-center space-x-4">
       <BookOpen 
@@ -32,7 +39,7 @@ export const NavigationIcons = ({
         className={`w-5 h-5 cursor-pointer transition-colors ${
           location.pathname === "/discover" ? "text-wikitok-red" : "text-white"
         }`}
-        onClick={handleDiscoverClick}
+        onClick={handleCompassClick}
       />
       <CreateAccountButton />
     </div>
