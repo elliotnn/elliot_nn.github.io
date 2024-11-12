@@ -1,9 +1,6 @@
 import { motion } from "framer-motion";
 import { Progress } from "./ui/progress";
 import { WikipediaArticle } from '../services/types';
-import { useState } from "react";
-import { Button } from "./ui/button";
-import { ChevronDown } from "lucide-react";
 
 interface ArticleContentProps {
   article: WikipediaArticle;
@@ -24,8 +21,6 @@ export const ArticleContent = ({
   progress,
   textContainerRef
 }: ArticleContentProps) => {
-  const [isTextVisible, setIsTextVisible] = useState(true);
-
   return (
     <div 
       key={article.id} 
@@ -43,7 +38,7 @@ export const ArticleContent = ({
         initial={{ opacity: 0, y: 20 }}
         animate={{
           opacity: isVisible && currentIndex === index ? 1 : 0,
-          y: isVisible && currentIndex === index ? (isTextVisible ? 0 : 500) : 20,
+          y: isVisible && currentIndex === index ? 0 : 20,
         }}
         transition={{ duration: 0.5 }}
         className="absolute bottom-0 left-0 right-0 flex flex-col"
@@ -79,23 +74,13 @@ export const ArticleContent = ({
       </motion.div>
       
       {currentIndex === index && (
-        <>
-          <div className="absolute bottom-0 left-0 right-0 z-20">
-            <Progress 
-              value={progress} 
-              className="h-1 bg-black/20"
-              indicatorClassName="bg-red-500"
-            />
-          </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute bottom-24 right-4 z-30 rounded-full bg-black/30 hover:bg-black/50"
-            onClick={() => setIsTextVisible(!isTextVisible)}
-          >
-            <ChevronDown className={`h-6 w-6 transition-transform ${!isTextVisible ? 'rotate-180' : ''}`} />
-          </Button>
-        </>
+        <div className="absolute bottom-0 left-0 right-0 z-20">
+          <Progress 
+            value={progress} 
+            className="h-1 bg-black/20"
+            indicatorClassName="bg-red-500"
+          />
+        </div>
       )}
     </div>
   );
