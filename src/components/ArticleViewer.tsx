@@ -123,23 +123,25 @@ const ArticleViewer = ({ articles: initialArticles, onArticleChange }) => {
             className="absolute bottom-0 left-0 right-0 flex flex-col"
           >
             {/* Fixed title section */}
-            <div className="bg-gradient-to-t from-black via-black/80 to-transparent px-8 pt-6 pb-4 z-20">
+            <div className="px-8 pt-6 pb-4 z-20">
               <h1 className="text-4xl font-bold mb-2">{article.title}</h1>
-              <div className="flex items-center space-x-2 text-sm text-gray-300">
-                <span>{article.readTime} min read</span>
-                <span>•</span>
-                <span>{article.views.toLocaleString()} views</span>
-              </div>
             </div>
 
             {/* Scrollable content section */}
             <div 
               ref={textContainerRef}
-              className="max-h-[50vh] overflow-y-auto px-8 pb-8 bg-gradient-to-t from-black/80 to-black/40 flex flex-col-reverse"
+              className="max-h-[50vh] overflow-y-auto px-8 pb-8 flex flex-col-reverse"
             >
-              <p className="text-lg leading-relaxed">
-                {currentIndex === index ? displayedText : article.content}
-              </p>
+              <div>
+                <p className="text-lg leading-relaxed mb-4">
+                  {currentIndex === index ? displayedText : article.content}
+                </p>
+                <div className="flex items-center space-x-2 text-sm text-gray-300 mt-4">
+                  <span>{article.readTime} min read</span>
+                  <span>•</span>
+                  <span>{article.views.toLocaleString()} views</span>
+                </div>
+              </div>
             </div>
           </motion.div>
           
