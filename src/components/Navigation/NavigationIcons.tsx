@@ -1,5 +1,5 @@
 import { BookOpen, Compass, LogIn } from "lucide-react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 interface NavigationIconsProps {
   searchType: "wiki" | "arxiv";
