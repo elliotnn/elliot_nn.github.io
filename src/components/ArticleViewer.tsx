@@ -11,6 +11,7 @@ const ArticleViewer = ({ articles: initialArticles, onArticleChange }) => {
   const [progress, setProgress] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const textContainerRef = useRef<HTMLDivElement>(null);
   const currentArticle = articles[currentIndex];
 
   const loadMoreArticles = useCallback(async () => {
@@ -53,10 +54,15 @@ const ArticleViewer = ({ articles: initialArticles, onArticleChange }) => {
         setDisplayedText(text.slice(0, currentChar));
         setProgress((currentChar / totalChars) * 100);
         currentChar++;
+        
+        // Scroll to bottom when new text is added
+        if (textContainerRef.current) {
+          textContainerRef.current.scrollTop = textContainerRef.current.scrollHeight;
+        }
       } else {
         clearInterval(interval);
       }
-    }, 20); // Changed from 50ms to 20ms for faster streaming
+    }, 20);
 
     return () => clearInterval(interval);
   }, [isVisible, currentArticle?.content]);
@@ -127,7 +133,10 @@ const ArticleViewer = ({ articles: initialArticles, onArticleChange }) => {
             </div>
 
             {/* Scrollable content section */}
-            <div className="max-h-[50vh] overflow-y-auto px-8 pb-8 bg-gradient-to-t from-black/80 to-black/40">
+            <div 
+              ref={textContainerRef}
+              className="max-h-[50vh] overflow-y-auto px-8 pb-8 bg-gradient-to-t from-black/80 to-black/40 flex flex-col-reverse"
+            >
               <p className="text-lg leading-relaxed">
                 {currentIndex === index ? displayedText : article.content}
               </p>
