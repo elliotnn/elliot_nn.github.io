@@ -2,8 +2,29 @@ import { WikipediaArticle } from './types';
 
 const ARXIV_API_URL = 'https://export.arxiv.org/api/query';
 
+// Cache for storing API responses
+const cache = new Map<string, { data: WikipediaArticle[], timestamp: number }>();
+const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+const API_RATE_LIMIT = 3000; // 3 seconds between requests
+let lastRequestTime = 0;
+
 export const searchArxivPapers = async (query: string): Promise<WikipediaArticle[]> => {
-  // Encode the query parameters properly
+  // Check cache first
+  const cacheKey = query.toLowerCase();
+  const cachedData = cache.get(cacheKey);
+  if (cachedData && Date.now() - cachedData.timestamp < CACHE_DURATION) {
+    return cachedData.data;
+  }
+
+  // Respect rate limiting
+  const now = Date.now();
+  const timeToWait = Math.max(0, API_RATE_LIMIT - (now - lastRequestTime));
+  if (timeToWait > 0) {
+    await new Promise(resolve => setTimeout(resolve, timeToWait));
+  }
+  lastRequestTime = Date.now();
+
+  // Construct the search query
   const searchQuery = encodeURIComponent(`(cat:cs.LG OR cat:cs.AI) AND all:${query}`);
   const url = `${ARXIV_API_URL}?search_query=${searchQuery}&start=0&max_results=10&sortBy=submittedDate&sortOrder=descending`;
   
@@ -21,15 +42,16 @@ export const searchArxivPapers = async (query: string): Promise<WikipediaArticle
     const xmlDoc = parser.parseFromString(data, "text/xml");
     const entries = xmlDoc.getElementsByTagName("entry");
     
-    return Array.from(entries).map((entry): WikipediaArticle => {
+    const articles = Array.from(entries).map((entry): WikipediaArticle => {
       const title = entry.getElementsByTagName("title")[0]?.textContent?.trim() || "";
       const summary = entry.getElementsByTagName("summary")[0]?.textContent?.trim() || "";
       const authors = Array.from(entry.getElementsByTagName("author"))
         .map(author => author.getElementsByTagName("name")[0]?.textContent || "")
         .join(", ");
+      const id = entry.getElementsByTagName("id")[0]?.textContent || `arxiv-${Date.now()}-${Math.random()}`;
       
       return {
-        id: entry.getElementsByTagName("id")[0]?.textContent || `${Date.now()}-${Math.random()}`,
+        id,
         title: title.replace(/\n/g, ' '),
         content: `${summary}\n\nAuthors: ${authors}`,
         image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/ArXiv_web.svg/1200px-ArXiv_web.svg.png",
@@ -40,6 +62,11 @@ export const searchArxivPapers = async (query: string): Promise<WikipediaArticle
         relatedArticles: [],
       };
     });
+
+    // Cache the results
+    cache.set(cacheKey, { data: articles, timestamp: Date.now() });
+    
+    return articles;
   } catch (error) {
     console.error('Error fetching arXiv papers:', error);
     return [];
