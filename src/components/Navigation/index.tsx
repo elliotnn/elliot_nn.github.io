@@ -5,6 +5,8 @@ import { NavigationLogo } from "./NavigationLogo";
 import { NavigationIcons } from "./NavigationIcons";
 import { SearchBar } from "./SearchBar";
 import { useToast } from "@/components/ui/use-toast";
+import { Button } from "@/components/ui/button";
+import { User } from "lucide-react";
 
 const Navigation = () => {
   const [open, setOpen] = useState(false);
@@ -46,13 +48,21 @@ const Navigation = () => {
 
   return (
     <nav 
-      className={`fixed top-0 left-0 right-0 h-14 z-50 flex items-center justify-between px-4 ${
-        isDiscoverPage ? "bg-black" : "bg-black"
-      }`}
+      className="fixed top-0 left-0 right-0 h-14 z-50 flex items-center justify-between px-4 bg-black"
       role="navigation"
       aria-label="Main navigation"
     >
-      <NavigationLogo />
+      <div className="flex items-center gap-4">
+        <NavigationLogo />
+        <Button
+          variant="ghost"
+          size="icon"
+          className="text-white hover:text-wikitok-red md:hidden"
+          onClick={handleAuthClick}
+        >
+          <User className="w-5 h-5" />
+        </Button>
+      </div>
       
       <SearchBar 
         searchValue={searchValue}

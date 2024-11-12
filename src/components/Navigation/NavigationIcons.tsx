@@ -1,5 +1,6 @@
-import { BookOpen, BookText, Compass, User } from "lucide-react";
+import { BookOpen, BookText, Compass } from "lucide-react";
 import { useLocation } from "react-router-dom";
+import { UserActions } from "./UserActions";
 
 interface NavigationIconsProps {
   searchType: "wiki" | "arxiv";
@@ -31,11 +32,7 @@ export const NavigationIcons = ({
           onClick={handleModeToggle}
         />
       </div>
-      <User
-        className="w-6 h-6 cursor-pointer text-white hover:text-wikitok-red transition-colors"
-        onClick={handleAuthClick}
-        aria-label="Account"
-      />
+      <UserActions handleAuthClick={handleAuthClick} />
       <Compass 
         className={`w-6 h-6 cursor-pointer transition-colors ${
           location.pathname === "/discover" ? "text-wikitok-red" : "text-white"
