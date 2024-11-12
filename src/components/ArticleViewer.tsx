@@ -114,22 +114,26 @@ const ArticleViewer = ({ articles: initialArticles, onArticleChange }) => {
               y: isVisible && currentIndex === index ? 0 : 20,
             }}
             transition={{ duration: 0.5 }}
-            className="absolute bottom-0 left-0 right-0 max-h-[70vh] overflow-y-auto p-8 pr-24"
+            className="absolute bottom-0 left-0 right-0 flex flex-col"
           >
-            <div className="sticky top-0 z-10 -mt-8 mb-6 bg-gradient-to-b from-black/80 via-black/60 to-transparent pt-8 pb-6">
-              <h1 className="text-4xl font-bold">{article.title}</h1>
-            </div>
-            <div className="space-y-4">
-              <p className="text-lg leading-relaxed">
-                {currentIndex === index ? displayedText : article.content}
-              </p>
+            {/* Fixed title section */}
+            <div className="bg-gradient-to-t from-black via-black/80 to-transparent px-8 pt-6 pb-4 z-20">
+              <h1 className="text-4xl font-bold mb-2">{article.title}</h1>
               <div className="flex items-center space-x-2 text-sm text-gray-300">
                 <span>{article.readTime} min read</span>
                 <span>•</span>
                 <span>{article.views.toLocaleString()} views</span>
               </div>
             </div>
+
+            {/* Scrollable content section */}
+            <div className="max-h-[50vh] overflow-y-auto px-8 pb-8 bg-gradient-to-t from-black/80 to-black/40">
+              <p className="text-lg leading-relaxed">
+                {currentIndex === index ? displayedText : article.content}
+              </p>
+            </div>
           </motion.div>
+          
           {currentIndex === index && (
             <div className="absolute bottom-0 left-0 right-0 z-20">
               <Progress 
