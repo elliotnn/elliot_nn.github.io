@@ -45,9 +45,13 @@ const Navigation = () => {
   const isDiscoverPage = location.pathname === "/discover";
 
   return (
-    <div className={`fixed top-0 left-0 right-0 h-14 z-50 flex items-center justify-between px-4 ${
-      isDiscoverPage ? "bg-black" : "bg-black"
-    }`}>
+    <nav 
+      className={`fixed top-0 left-0 right-0 h-14 z-50 flex items-center justify-between px-4 ${
+        isDiscoverPage ? "bg-black" : "bg-black"
+      }`}
+      role="navigation"
+      aria-label="Main navigation"
+    >
       <NavigationLogo />
       
       <SearchBar 
@@ -69,7 +73,7 @@ const Navigation = () => {
         setSearchValue={setSearchValue}
         searchType={searchType}
       />
-    </div>
+    </nav>
   );
 };
 

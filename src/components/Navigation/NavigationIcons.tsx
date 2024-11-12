@@ -27,6 +27,7 @@ export const NavigationIcons = ({
       <User
         className="w-6 h-6 cursor-pointer text-white hover:text-wikitok-red transition-colors"
         onClick={handleAuthClick}
+        aria-label="Account"
       />
       <Compass 
         className={`w-6 h-6 cursor-pointer transition-colors ${
