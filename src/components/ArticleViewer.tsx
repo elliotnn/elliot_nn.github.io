@@ -18,6 +18,7 @@ const ArticleViewer = ({ articles: initialArticles, onArticleChange }) => {
     
     try {
       setIsLoading(true);
+      // Get related articles based on the current article
       const newArticles = currentArticle 
         ? await getRelatedArticles(currentArticle)
         : await getRandomArticles(3);
@@ -55,7 +56,7 @@ const ArticleViewer = ({ articles: initialArticles, onArticleChange }) => {
       } else {
         clearInterval(interval);
       }
-    }, 20);
+    }, 20); // Changed from 50ms to 20ms for faster streaming
 
     return () => clearInterval(interval);
   }, [isVisible, currentArticle?.content]);
@@ -105,6 +106,7 @@ const ArticleViewer = ({ articles: initialArticles, onArticleChange }) => {
               alt={article.title}
               className="w-full h-full object-cover"
             />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/30 to-black/60" />
           </div>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -120,10 +122,10 @@ const ArticleViewer = ({ articles: initialArticles, onArticleChange }) => {
               <span>•</span>
               <span>{article.views.toLocaleString()} views</span>
             </div>
-            <p className="text-lg leading-relaxed mt-16">
+            <p className="text-lg leading-relaxed">
               {currentIndex === index ? displayedText : article.content}
             </p>
-            <div className="sticky top-8 z-10 pb-4 bg-gradient-to-b from-black/80 via-black/60 to-transparent pt-4">
+            <div className="sticky -top-8 z-10 pb-4">
               <h1 className="text-4xl font-bold">{article.title}</h1>
             </div>
           </motion.div>
