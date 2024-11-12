@@ -1,4 +1,4 @@
-import { BookOpen, Compass } from "lucide-react";
+import { BookOpen, Compass, LogIn } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { SearchDialog } from "./SearchDialog";
@@ -44,6 +44,10 @@ const Navigation = () => {
     navigate("/", { state: { mode: newMode, forceReload: true } });
   };
 
+  const handleAuthClick = () => {
+    navigate("/auth");
+  };
+
   const isDiscoverPage = location.pathname === "/discover";
 
   return (
@@ -75,6 +79,10 @@ const Navigation = () => {
             location.pathname === "/discover" ? "text-wikitok-red" : "text-white"
           }`}
           onClick={handleDiscoverClick}
+        />
+        <LogIn
+          className="w-5 h-5 cursor-pointer text-white hover:text-wikitok-red transition-colors"
+          onClick={handleAuthClick}
         />
       </div>
     </div>
