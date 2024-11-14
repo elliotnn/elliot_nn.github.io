@@ -1,4 +1,5 @@
-import { Search, Compass, BookOpen } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { Home, Compass, User, Search, BookOpen } from "lucide-react";
 import {
   Command,
   CommandDialog,
@@ -9,13 +10,13 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { useState, useEffect } from "react";
-import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { searchArticles } from "../services/wikipediaService";
 import { searchArxivPapers } from "../services/arxivService";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/components/ui/use-toast";
 
-const Navigation = () => {
+const Navigation = ({ showAccountCreation = true }) => {
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [searchType, setSearchType] = useState<"wiki" | "arxiv">("wiki");
@@ -105,17 +106,14 @@ const Navigation = () => {
 
   return (
     <>
-      <div className={`fixed top-0 left-0 right-0 h-14 z-50 flex items-center justify-between px-4 ${
-        isDiscoverPage 
-          ? "bg-black" 
-          : "bg-black"
-      }`}>
-        <div 
+      <div className="fixed top-0 left-0 right-0 h-14 z-50 flex items-center justify-between px-4 bg-black">
+        <Link
+          to="/"
           className="text-xl font-bold text-wikitok-red cursor-pointer"
-          onClick={handleRandomArticle}
         >
           WikTok
-        </div>
+        </Link>
+
         <div 
           className="flex items-center bg-black/20 backdrop-blur-sm rounded-full px-4 py-2 cursor-pointer"
           onClick={() => setOpen(true)}
@@ -125,6 +123,7 @@ const Navigation = () => {
             {searchValue || "Search articles"}
           </span>
         </div>
+
         <div className="flex space-x-6">
           <BookOpen 
             className={`w-5 h-5 cursor-pointer transition-colors ${
@@ -132,19 +131,26 @@ const Navigation = () => {
             }`}
             onClick={handleModeToggle}
           />
-          <Compass 
-            className={`w-5 h-5 cursor-pointer transition-colors ${
+          <Link
+            to="/discover"
+            className={`${
               location.pathname === "/discover" ? "text-wikitok-red" : "text-white"
-            }`}
-            onClick={handleDiscoverClick}
-          />
+            } hover:text-wikitok-red transition-colors`}
+          >
+            <Compass className="w-5 h-5" />
+          </Link>
+          <Link
+            to="/auth"
+            className={`${
+              location.pathname === "/auth" ? "text-wikitok-red" : "text-white"
+            } hover:text-wikitok-red transition-colors`}
+          >
+            <User className="w-5 h-5" />
+          </Link>
         </div>
       </div>
 
-      <CommandDialog 
-        open={open} 
-        onOpenChange={handleOpenChange}
-      >
+      <CommandDialog open={open} onOpenChange={handleOpenChange}>
         <Command shouldFilter={false}>
           <CommandInput 
             placeholder={`Search ${searchType === "wiki" ? "Wikipedia" : "arXiv ML Papers"}...`}
@@ -195,6 +201,40 @@ const Navigation = () => {
           </CommandList>
         </Command>
       </CommandDialog>
+
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-wikitok-dark border-t border-wikitok-blue/20 md:hidden">
+        <div className="flex items-center justify-around h-14 px-4 max-w-screen-xl mx-auto">
+          <Link
+            to="/"
+            className={`flex flex-col items-center ${
+              location.pathname === "/" ? "text-wikitok-red" : "text-gray-400"
+            } hover:text-wikitok-red transition-colors`}
+          >
+            <Home className="h-5 w-5" />
+            <span className="text-xs mt-1">Home</span>
+          </Link>
+
+          <Link
+            to="/discover"
+            className={`flex flex-col items-center ${
+              location.pathname === "/discover" ? "text-wikitok-red" : "text-gray-400"
+            } hover:text-wikitok-red transition-colors`}
+          >
+            <Compass className="h-5 w-5" />
+            <span className="text-xs mt-1">Discover</span>
+          </Link>
+
+          <Link
+            to="/auth"
+            className={`flex flex-col items-center ${
+              location.pathname === "/auth" ? "text-wikitok-red" : "text-gray-400"
+            } hover:text-wikitok-red transition-colors`}
+          >
+            <User className="h-5 w-5" />
+            <span className="text-xs mt-1">Account</span>
+          </Link>
+        </div>
+      </div>
     </>
   );
 };

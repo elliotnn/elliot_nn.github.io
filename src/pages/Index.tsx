@@ -5,8 +5,9 @@ import LeftSidebar from "../components/LeftSidebar";
 import { getRandomArticles, searchArticles } from "../services/wikipediaService";
 import { searchArxivPapers } from "../services/arxivService";
 import { useToast } from "@/components/ui/use-toast";
-import { useSearchParams, useLocation, useNavigate } from "react-router-dom";
+import { useSearchParams, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { transformToArticle } from "../services/articleTransformer";
 
 const Index = () => {
   const { toast } = useToast();
@@ -17,10 +18,43 @@ const Index = () => {
   const [currentArticle, setCurrentArticle] = useState(null);
   const currentMode = location.state?.mode || "wiki";
   const forceReload = location.state?.forceReload;
+  const { id } = useParams();
+  const [showChat, setShowChat] = useState(true);
 
   const { data: articles, isLoading, error, refetch } = useQuery({
-    queryKey: ["articles", searchQuery, currentMode],
+    queryKey: ["articles", searchQuery, currentMode, id],
     queryFn: async () => {
+      if (id) {
+        try {
+          const response = await fetch(
+            `https://en.wikipedia.org/w/api.php?` + 
+            new URLSearchParams({
+              action: 'query',
+              format: 'json',
+              origin: '*',
+              pageids: id,
+              prop: 'extracts|pageimages|categories',
+              explaintext: '1',
+              exintro: '1',
+              pithumbsize: '1000',
+              piprop: 'thumbnail',
+            })
+          );
+          const data = await response.json();
+          const page = data.query?.pages?.[id];
+          
+          if (page) {
+            const transformedArticle = await transformToArticle(page);
+            if (transformedArticle) {
+              setCurrentArticle(transformedArticle);
+              return [transformedArticle];
+            }
+          }
+        } catch (error) {
+          console.error('Error fetching specific article:', error);
+        }
+      }
+
       let fetchedArticles;
       if (searchQuery) {
         if (location.state?.reorderedResults) {
@@ -85,7 +119,11 @@ const Index = () => {
           articles={articles} 
           onArticleChange={setCurrentArticle}
         />
-        <RightSidebar article={currentArticle || articles[0]} />
+        <RightSidebar 
+          article={currentArticle || articles[0]} 
+          showChat={showChat}
+          onToggleChat={() => setShowChat(!showChat)}
+        />
       </div>
     </div>
   );

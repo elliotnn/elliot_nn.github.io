@@ -8,6 +8,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 interface SearchDialogProps {
   open: boolean;
@@ -25,18 +26,23 @@ export const SearchDialog = ({
   searchType
 }: SearchDialogProps) => {
   return (
-    <CommandDialog open={open} onOpenChange={onOpenChange}>
-      <Command shouldFilter={false}>
-        <CommandInput 
-          placeholder={`Search ${searchType === "wiki" ? "Wikipedia" : "arXiv ML Papers"}...`}
-          value={searchValue}
-          onValueChange={setSearchValue}
-          className="border-none focus:ring-0"
-        />
-        <CommandList>
-          <CommandEmpty>Start typing to search...</CommandEmpty>
-        </CommandList>
-      </Command>
-    </CommandDialog>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="overflow-hidden p-0 shadow-lg">
+        <DialogTitle className="sr-only">
+          Search {searchType === "wiki" ? "Wikipedia" : "arXiv ML Papers"}
+        </DialogTitle>
+        <Command shouldFilter={false}>
+          <CommandInput 
+            placeholder={`Search ${searchType === "wiki" ? "Wikipedia" : "arXiv ML Papers"}...`}
+            value={searchValue}
+            onValueChange={setSearchValue}
+            className="border-none focus:ring-0"
+          />
+          <CommandList>
+            <CommandEmpty>Start typing to search...</CommandEmpty>
+          </CommandList>
+        </Command>
+      </DialogContent>
+    </Dialog>
   );
 };

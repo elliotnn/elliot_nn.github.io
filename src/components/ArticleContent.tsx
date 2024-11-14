@@ -44,17 +44,19 @@ export const ArticleContent = ({
         className="absolute bottom-0 left-0 right-0 flex flex-col"
       >
         <div className="px-8 pt-6 pb-4 z-20">
-          <span className="relative">
-            <span className="absolute inset-0 backdrop-blur-md bg-black/30 -z-10" />
-            <h1 className="text-4xl font-bold mb-2 backdrop-blur-sm bg-black/20 rounded-lg px-2 py-1">
-              {article.title}
-            </h1>
-            {article.title.includes("arXiv") && (
-              <span className="bg-wikitok-red text-white px-2 py-1 rounded-full text-sm">
-                Research Paper
+          <h1 className="inline-block text-4xl font-bold mb-2">
+            <span className="relative">
+              <span className="absolute inset-0 backdrop-blur-md bg-black/30 rounded-lg -m-1 p-1" />
+              <span className="relative px-2 py-1">
+                {article.title}
               </span>
-            )}
-          </span>
+            </span>
+          </h1>
+          {article.title.includes("arXiv") && (
+            <span className="bg-wikitok-red text-white px-2 py-1 rounded-full text-sm ml-2">
+              Research Paper
+            </span>
+          )}
         </div>
 
         <div 

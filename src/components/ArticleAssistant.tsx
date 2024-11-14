@@ -1,17 +1,15 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { Send, Key } from "lucide-react";
+import { Send, Key, X } from "lucide-react";
 import { useToast } from "./ui/use-toast";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Message } from "./chat/Message";
 import { useChatAssistant } from "./chat/useChatAssistant";
 
-const ArticleAssistant = ({ article }: { article: { title: string; content: string } | null }) => {
+const ArticleAssistant = ({ article, onClose }: { article: { title: string; content: string } | null, onClose: () => void }) => {
   const [question, setQuestion] = useState("");
-  const [apiKey, setApiKey] = useState(() => {
-    return localStorage.getItem("openai_api_key") || "";
-  });
+  const apiKey = import.meta.env.VITE_OPENAI_API_KEY; // Use the environment variable
   const { messages, isLoading, askQuestion, generateInitialQuestion } = useChatAssistant(article);
   const { toast } = useToast();
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -21,15 +19,15 @@ const ArticleAssistant = ({ article }: { article: { title: string; content: stri
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+  const handleStreamScroll = () => {
+    requestAnimationFrame(scrollToBottom);
+  };
 
   useEffect(() => {
-    if (apiKey) {
-      localStorage.setItem("openai_api_key", apiKey);
-    }
-  }, [apiKey]);
+    const scrollInterval = setInterval(handleStreamScroll, 100);
+    
+    return () => clearInterval(scrollInterval);
+  }, [messages]);
 
   useEffect(() => {
     if (article && apiKey) {
@@ -62,18 +60,33 @@ const ArticleAssistant = ({ article }: { article: { title: string; content: stri
   if (!article) return null;
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="p-4 border-b border-border">
-        <h2 className="text-lg font-semibold">Chat about: {article.title}</h2>
+    <div className="flex flex-col h-[calc(100vh-3.5rem)] mt-14 relative">
+      <div className="p-4 border-b border-border bg-wikitok-dark/50 backdrop-blur-sm sticky top-14 z-10 flex justify-between items-center">
+        <div>
+          <h2 className="text-lg font-semibold text-primary">{article.title}</h2>
+          <p className="text-sm text-muted-foreground">Ask questions about this article</p>
+        </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onClose}
+          className="hover:bg-destructive/90 transition-colors"
+        >
+          <X className="w-4 h-4" />
+        </Button>
       </div>
-      <div className="flex-1 overflow-y-auto">
+
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 h-[calc(100vh-14rem)]">
         {messages.map((message, index) => (
           <Message key={index} {...message} />
         ))}
         <div ref={messagesEndRef} />
       </div>
 
-      <form onSubmit={handleSubmit} className="mt-auto border-t border-border bg-wikitok-dark p-4">
+      <form 
+        onSubmit={handleSubmit} 
+        className="sticky bottom-0 left-0 right-0 border-t border-border bg-wikitok-dark/50 backdrop-blur-sm p-4"
+      >
         <div className="flex items-center gap-2">
           <Input
             ref={inputRef}
@@ -83,31 +96,14 @@ const ArticleAssistant = ({ article }: { article: { title: string; content: stri
             onChange={(e) => setQuestion(e.target.value)}
             onKeyPress={handleKeyPress}
             disabled={isLoading}
-            className="flex-1"
+            className="flex-1 bg-background/50 backdrop-blur-sm"
           />
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="outline" size="icon">
-                <Key className="h-4 w-4" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-80">
-              <div className="space-y-2">
-                <h4 className="font-medium">Change API Key</h4>
-                <Input
-                  type="password"
-                  placeholder="Enter your OpenAI API key..."
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
-                  className="font-mono"
-                />
-              </div>
-            </PopoverContent>
-          </Popover>
+
           <Button 
             type="submit" 
             disabled={isLoading || !question.trim() || !apiKey.trim()}
             size="icon"
+            className="hover:bg-primary/90 transition-colors"
           >
             <Send className="w-4 h-4" />
           </Button>
